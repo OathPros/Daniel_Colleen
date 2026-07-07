@@ -39,7 +39,7 @@
           <form id="rsvp-form" class="rsvp-form" novalidate>
             <div class="form-grid">
               <div class="form-row">
-                <label for="name">Full name</label>
+                <label for="name">Household contact name</label>
                 <input id="name" name="name" type="text" autocomplete="name" required maxlength="120" />
               </div>
 
@@ -47,41 +47,33 @@
                 <label for="email">Email</label>
                 <input id="email" name="email" type="email" autocomplete="email" required maxlength="160" />
               </div>
+            </div>
 
-              <div class="form-row">
-                <label for="attendance">Will you attend?</label>
-                <select id="attendance" name="attendance" required>
-                  <option value="">Select one</option>
-                  <option value="yes">Yes, I/we will attend</option>
-                  <option value="no">No, I/we cannot attend</option>
+            <div class="invitee-picker" aria-labelledby="invitee-picker-title">
+              <div>
+                <h2 id="invitee-picker-title">Choose who you are RSVPing for</h2>
+                <p>Select a guest from the approved list, then add another if you are responding for multiple invited guests.</p>
+              </div>
+              <div class="invitee-picker-controls">
+                <label class="sr-only" for="invitee-select">Approved guest list</label>
+                <select id="invitee-select" name="inviteeSelect">
+                  <option value="">Select a guest</option>
+                  <option value="Darrow O'Lykos">Darrow O'Lykos</option>
+                  <option value="Virginia au Augustus">Virginia au Augustus</option>
+                  <option value="Sevro au Barca">Sevro au Barca</option>
+                  <option value="Victra au Julii">Victra au Julii</option>
+                  <option value="Cassius au Bellona">Cassius au Bellona</option>
+                  <option value="Eo of Lykos">Eo of Lykos</option>
+                  <option value="Ragnar Volarus">Ragnar Volarus</option>
+                  <option value="Holiday ti Nakamura">Holiday ti Nakamura</option>
                 </select>
-              </div>
-
-              <div class="form-row">
-                <label for="guestCount">Number of guests</label>
-                <input id="guestCount" name="guestCount" type="number" min="1" max="4" value="1" required />
+                <button id="add-invitee" type="button" class="button button-secondary">Add guest</button>
               </div>
             </div>
 
-            <div class="form-row">
-              <label for="guestNames">Guest names</label>
-              <textarea id="guestNames" name="guestNames" rows="3" maxlength="500" placeholder="List the names of everyone included in this RSVP."></textarea>
-            </div>
-
-            <div class="form-row">
-              <label for="dietary">Dietary notes</label>
-              <textarea id="dietary" name="dietary" rows="3" maxlength="500" placeholder="Optional. Please include allergies or dietary restrictions."></textarea>
-            </div>
-
-            <div class="form-row">
-              <label for="song">Song request</label>
-              <input id="song" name="song" type="text" maxlength="160" placeholder="Optional" />
-            </div>
-
-            <div class="form-row">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="4" maxlength="800" placeholder="Optional"></textarea>
-            </div>
+            <div id="invitee-tabs" class="invitee-tabs" role="tablist" aria-label="Selected RSVP guests"></div>
+            <div id="invitee-fields" class="invitee-fields" aria-live="polite"></div>
+            <input id="selectedInvitees" name="selectedInvitees" type="hidden" />
 
             <div class="form-row honeypot" aria-hidden="true">
               <label for="website">Website</label>
@@ -94,10 +86,6 @@
 
             <p id="rsvp-status" class="rsvp-status" role="status" aria-live="polite"></p>
           </form>
-
-          <p class="privacy-note">
-            RSVP information is collected only to help us manage attendance, meals, and guest communication for the wedding. Information may be shared with wedding planning support as needed and will be deleted or archived after the event.
-          </p>
         </div>
       </div>
     </section>
