@@ -202,3 +202,69 @@
     }
   });
 })();
+
+(function () {
+  const gallery = document.querySelector("[data-gallery]");
+  const lightbox = document.querySelector("[data-gallery-lightbox]");
+  if (!gallery || !lightbox) return;
+
+  const items = Array.from(gallery.querySelectorAll(".gallery-item"));
+  const image = lightbox.querySelector(".gallery-lightbox__image");
+  const caption = lightbox.querySelector("[data-gallery-caption]");
+  const closeButton = lightbox.querySelector("[data-gallery-close]");
+  const fullscreenButton = lightbox.querySelector("[data-gallery-fullscreen]");
+  const prevButton = lightbox.querySelector("[data-gallery-prev]");
+  const nextButton = lightbox.querySelector("[data-gallery-next]");
+  let currentIndex = 0;
+  let lastFocused = null;
+
+  function showPhoto(index) {
+    currentIndex = (index + items.length) % items.length;
+    const item = items[currentIndex];
+    const style = window.getComputedStyle(item);
+    image.style.backgroundImage = style.backgroundImage;
+    image.setAttribute("aria-label", item.getAttribute("aria-label")?.replace("Open photo: ", "") || "Gallery photo");
+    caption.textContent = `${currentIndex + 1} / ${items.length}`;
+  }
+
+  function openLightbox(index) {
+    lastFocused = document.activeElement;
+    showPhoto(index);
+    lightbox.hidden = false;
+    document.body.style.overflow = "hidden";
+    closeButton.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.hidden = true;
+    document.body.style.overflow = "";
+    if (document.fullscreenElement) document.exitFullscreen();
+    lastFocused?.focus();
+  }
+
+  items.forEach((item, index) => {
+    item.addEventListener("click", () => openLightbox(index));
+  });
+
+  closeButton.addEventListener("click", closeLightbox);
+  prevButton.addEventListener("click", () => showPhoto(currentIndex - 1));
+  nextButton.addEventListener("click", () => showPhoto(currentIndex + 1));
+  fullscreenButton.addEventListener("click", () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      lightbox.requestFullscreen?.();
+    }
+  });
+
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (lightbox.hidden) return;
+    if (event.key === "Escape") closeLightbox();
+    if (event.key === "ArrowLeft") showPhoto(currentIndex - 1);
+    if (event.key === "ArrowRight") showPhoto(currentIndex + 1);
+  });
+})();

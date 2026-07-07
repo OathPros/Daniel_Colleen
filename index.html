@@ -122,13 +122,13 @@
           <h2><span class="subhead">a few favourites</span>Moments we love.</h2>
           <p class="lead">These are starter placeholders for the mockup. The final version can use engagement photos, venue images, and weekend moments.</p>
 
-          <div class="gallery">
-            <div class="gallery-item" role="img" aria-label="Daniel and Colleen dancing in an orchard"></div>
-            <div class="gallery-item" role="img" aria-label="Daniel and Colleen by the water"></div>
-            <div class="gallery-item" role="img" aria-label="Daniel and Colleen on a beach swing"></div>
-            <div class="gallery-item" role="img" aria-label="Daniel and Colleen in a bookshop"></div>
-            <div class="gallery-item" role="img" aria-label="Daniel and Colleen sharing a kiss"></div>
-            <div class="gallery-item" role="img" aria-label="Daniel and Colleen dancing in an orchard"></div>
+          <div class="gallery" data-gallery>
+            <button class="gallery-item" type="button" aria-label="Open photo: Daniel and Colleen dancing in an orchard"></button>
+            <button class="gallery-item" type="button" aria-label="Open photo: Daniel and Colleen by the water"></button>
+            <button class="gallery-item" type="button" aria-label="Open photo: Daniel and Colleen on a beach swing"></button>
+            <button class="gallery-item" type="button" aria-label="Open photo: Daniel and Colleen in a bookshop"></button>
+            <button class="gallery-item" type="button" aria-label="Open photo: Daniel and Colleen sharing a kiss"></button>
+            <button class="gallery-item" type="button" aria-label="Open photo: Daniel and Colleen dancing in an orchard"></button>
           </div>
         </div>
       </div>
@@ -183,6 +183,19 @@
       venue-space details, hotel blocks, and RSVP link when ready.
     </p>
   </footer>
+
+  <div class="gallery-lightbox" data-gallery-lightbox hidden>
+    <div class="gallery-lightbox__bar">
+      <p data-gallery-caption>Photo gallery</p>
+      <button class="gallery-lightbox__control" type="button" data-gallery-fullscreen>Fullscreen</button>
+      <button class="gallery-lightbox__control" type="button" data-gallery-close>Close</button>
+    </div>
+    <button class="gallery-lightbox__nav gallery-lightbox__nav--prev" type="button" data-gallery-prev aria-label="Previous photo">‹</button>
+    <div class="gallery-lightbox__scroller" tabindex="0">
+      <div class="gallery-lightbox__image" role="img"></div>
+    </div>
+    <button class="gallery-lightbox__nav gallery-lightbox__nav--next" type="button" data-gallery-next aria-label="Next photo">›</button>
+  </div>
 
   <script src="assets/js/main.js"></script>
 </body>
