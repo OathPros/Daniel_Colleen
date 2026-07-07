@@ -49,32 +49,37 @@
               </div>
             </div>
 
-            <div class="invitee-picker" aria-labelledby="invitee-picker-title">
+            <div class="guest-lookup" aria-labelledby="guest-lookup-title">
               <div>
-                <h2 id="invitee-picker-title">Choose who you are RSVPing for</h2>
-                <p>Select a guest from the approved list, then add another if you are responding for multiple invited guests.</p>
+                <h2 id="guest-lookup-title">Find your RSVP party</h2>
+                <p>Search the approved guest list, choose any person in your party, and we will add everyone included on that invitation.</p>
               </div>
-              <div class="invitee-picker-controls">
-                <label class="sr-only" for="invitee-select">Approved guest list</label>
-                <select id="invitee-select" name="inviteeSelect">
-                  <option value="">Select a guest</option>
-                  <option value="Darrow O'Lykos">Darrow O'Lykos</option>
-                  <option value="Virginia au Augustus">Virginia au Augustus</option>
-                  <option value="Sevro au Barca">Sevro au Barca</option>
-                  <option value="Victra au Julii">Victra au Julii</option>
-                  <option value="Cassius au Bellona">Cassius au Bellona</option>
-                  <option value="Eo of Lykos">Eo of Lykos</option>
-                  <option value="Ragnar Volarus">Ragnar Volarus</option>
-                  <option value="Holiday ti Nakamura">Holiday ti Nakamura</option>
-                </select>
-                <button id="add-invitee" type="button" class="button button-secondary">Add guest</button>
+              <div class="guest-lookup-controls">
+                <label class="sr-only" for="guest-search">Approved guest list</label>
+                <input id="guest-search" name="guestSearch" type="search" list="guest-options" placeholder="Start typing a guest name" autocomplete="off" />
+                <datalist id="guest-options"></datalist>
+                <button id="load-party" type="button" class="button button-secondary">Load party</button>
               </div>
             </div>
 
+            <div id="party-note" class="party-note" aria-live="polite"></div>
             <div id="invitee-tabs" class="invitee-tabs" role="tablist" aria-label="Selected RSVP guests"></div>
             <div id="invitee-fields" class="invitee-fields" aria-live="polite"></div>
             <input id="selectedInvitees" name="selectedInvitees" type="hidden" />
+            <input id="selectedParty" name="selectedParty" type="hidden" />
 
+            <section id="rsvp-preview" class="rsvp-preview" aria-labelledby="rsvp-preview-title" hidden>
+              <div class="rsvp-preview-header">
+                <p class="section-label">Review</p>
+                <h2 id="rsvp-preview-title">Is this RSVP correct?</h2>
+                <p>Please review each guest's choices before sending your final RSVP.</p>
+              </div>
+              <div id="rsvp-preview-list" class="rsvp-preview-list"></div>
+              <div class="rsvp-preview-actions">
+                <button id="edit-rsvp" type="button" class="button button-secondary">Edit RSVP</button>
+                <button id="confirm-rsvp" type="button" class="button button-primary">Yes, submit</button>
+              </div>
+            </section>
             <div class="form-row honeypot" aria-hidden="true">
               <label for="website">Website</label>
               <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
