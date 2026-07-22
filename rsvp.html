@@ -25,17 +25,9 @@
   </header>
 
   <main id="main">
-    <section id="rsvp" class="section" aria-labelledby="rsvp-title">
+    <section id="rsvp" class="section" aria-labelledby="guest-lookup-title">
       <div class="section-panel">
         <div class="section-content centered">
-          <p class="section-label">RSVP</p>
-
-          <h1 id="rsvp-title">Celebrate with us</h1>
-
-          <p class="lead">
-            Please complete one RSVP per household. If plans change later, you can submit the form again or contact us directly.
-          </p>
-
           <form id="rsvp-form" class="rsvp-form" novalidate>
 
             <div class="guest-lookup" aria-labelledby="guest-lookup-title">
@@ -45,8 +37,9 @@
               </div>
               <div class="guest-lookup-controls">
                 <label class="sr-only" for="guest-search">Approved guest list</label>
-                <input id="guest-search" name="guestSearch" type="search" list="guest-options" placeholder="Start typing a guest name" autocomplete="off" />
-                <datalist id="guest-options"></datalist>
+                <select id="guest-search" name="guestSearch">
+                  <option value="">Choose a guest name</option>
+                </select>
                 <button id="load-party" type="button" class="button button-secondary">Load party</button>
               </div>
             </div>
