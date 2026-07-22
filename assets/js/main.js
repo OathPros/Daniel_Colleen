@@ -57,6 +57,8 @@
   const guestSearch = document.getElementById("guest-search");
   const loadPartyButton = document.getElementById("load-party");
   const partyNote = document.getElementById("party-note");
+  const rsvpDetails = document.getElementById("rsvp-details");
+  const inviteeResponses = document.getElementById("invitee-responses");
   const selectedInviteesInput = document.getElementById("selectedInvitees");
   const selectedPartyInput = document.getElementById("selectedParty");
   const selectedInvitees = [];
@@ -108,10 +110,54 @@
     selectedPartyInput.value = selectedPartyId;
   }
 
+  function inviteeFieldId(name, suffix) {
+    return `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${suffix}`;
+  }
+
+  function renderInviteeResponses() {
+    inviteeResponses.replaceChildren();
+    rsvpDetails.hidden = !selectedInvitees.length;
+
+    selectedInvitees.forEach((name) => {
+      const card = document.createElement("fieldset");
+      card.className = "invitee-response";
+
+      const legend = document.createElement("legend");
+      legend.textContent = name;
+      card.append(legend);
+
+      const attendanceRow = document.createElement("div");
+      attendanceRow.className = "attendance-options";
+
+      ["Joyfully accepts", "Regretfully declines"].forEach((label, index) => {
+        const optionLabel = document.createElement("label");
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `attendance[${name}]`;
+        radio.value = index === 0 ? "accepts" : "declines";
+        radio.required = true;
+        optionLabel.append(radio, document.createTextNode(label));
+        attendanceRow.append(optionLabel);
+      });
+
+      const dietId = inviteeFieldId(name, "dietary");
+      const dietaryRow = document.createElement("div");
+      dietaryRow.className = "form-row";
+      dietaryRow.innerHTML = `
+        <label for="${dietId}">Dietary restrictions or allergies</label>
+        <input id="${dietId}" name="dietary[${name}]" type="text" autocomplete="off" placeholder="None, vegetarian, gluten-free, etc." />
+      `;
+
+      card.append(attendanceRow, dietaryRow);
+      inviteeResponses.append(card);
+    });
+  }
+
   function clearParty() {
     selectedInvitees.splice(0, selectedInvitees.length);
     selectedPartyId = "";
     partyNote.textContent = "";
+    renderInviteeResponses();
     updateSelectedInvitees();
   }
 
@@ -127,6 +173,7 @@
     selectedInvitees.push(...party.members);
     partyNote.textContent = `Loaded ${party.members.length} guest${party.members.length === 1 ? "" : "s"}: ${party.members.join(", ")}.`;
     guestSearch.value = "";
+    renderInviteeResponses();
     updateSelectedInvitees();
     setStatus("", "");
   }
@@ -134,6 +181,7 @@
   loadPartyButton.addEventListener("click", loadParty);
   guestSearch.addEventListener("change", () => { if (guestSearch.value) loadParty(); });
   renderGuestOptions();
+  renderInviteeResponses();
   updateSelectedInvitees();
 
   form.addEventListener("submit", async function (event) {
@@ -149,9 +197,15 @@
       return;
     }
     submittedAtClient.value = new Date().toISOString();
-    const payload = Object.fromEntries(new FormData(form).entries());
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
     payload.selectedInvitees = selectedInvitees;
     payload.selectedParty = selectedPartyId;
+    payload.inviteeResponses = selectedInvitees.map((name) => ({
+      name,
+      attendance: formData.get(`attendance[${name}]`) || "",
+      dietary: formData.get(`dietary[${name}]`) || ""
+    }));
 
     submitButton.disabled = true;
     setStatus("Submitting your RSVP...", "pending");
