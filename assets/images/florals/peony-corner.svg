@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 620" role="img" aria-label="Watercolor peony corner illustration">
+  <defs>
+    <radialGradient id="petal" cx="45%" cy="42%" r="60%"><stop offset="0" stop-color="#fff3ee"/><stop offset=".5" stop-color="#eda0aa"/><stop offset="1" stop-color="#b94b67"/></radialGradient>
+    <linearGradient id="leaf" x1="0" x2="1"><stop stop-color="#dce5c0"/><stop offset="1" stop-color="#557765"/></linearGradient>
+    <filter id="soft"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="7"/><feColorMatrix type="saturate" values=".35"/><feBlend in="SourceGraphic" mode="multiply"/></filter>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#soft)">
+    <path d="M497 555c-7-116-40-214-93-294-35-52-70-88-118-133" stroke="#6f5a45" stroke-width="6" opacity=".55"/>
+    <path d="M459 462c58-52 121-79 206-84" stroke="#6f5a45" stroke-width="5" opacity=".45"/>
+    <path d="M372 332c-84-26-153-27-242-3" stroke="#6f5a45" stroke-width="5" opacity=".42"/>
+    <g fill="url(#leaf)" stroke="#496b58" stroke-width="2" opacity=".9">
+      <path d="M279 164c-54-65-55-114-2-147 35 43 37 93 2 147z"/><path d="M327 220c48-73 103-98 165-73-30 56-85 80-165 73z"/><path d="M392 339c78-35 137-32 177 11-51 39-111 35-177-11z"/><path d="M462 462c80-13 134 4 162 50-58 24-112 8-162-50z"/><path d="M247 318c-82 12-140-6-172-53 59-28 118-9 172 53z"/><path d="M339 274c-69 31-122 28-159-10 47-37 101-34 159 10z"/>
+    </g>
+    <g stroke="#8b3650" stroke-width="2" opacity=".95">
+      <g transform="translate(286 215)">
+        <ellipse rx="92" ry="60" fill="url(#petal)" transform="rotate(-12)"/><ellipse rx="82" ry="50" fill="#f6c3c7" transform="rotate(36)"/><ellipse rx="74" ry="45" fill="#d7677d" transform="rotate(92)"/><ellipse rx="67" ry="38" fill="#fff1ed" transform="rotate(150)"/><circle r="28" fill="#b43f50"/><circle r="12" fill="#e8bb63"/>
+      </g>
+      <g transform="translate(455 360) scale(.85)">
+        <ellipse rx="92" ry="60" fill="url(#petal)" transform="rotate(-18)"/><ellipse rx="84" ry="50" fill="#f4adb9" transform="rotate(37)"/><ellipse rx="70" ry="42" fill="#cf5770" transform="rotate(95)"/><ellipse rx="60" ry="36" fill="#fff2ec" transform="rotate(153)"/><circle r="25" fill="#a83a4d"/><circle r="10" fill="#e7bf67"/>
+      </g>
+    </g>
+  </g>
+</svg>
