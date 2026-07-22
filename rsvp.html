@@ -52,23 +52,9 @@
             </div>
 
             <div id="party-note" class="party-note" aria-live="polite"></div>
-            <div id="invitee-tabs" class="invitee-tabs" role="tablist" aria-label="Selected RSVP guests"></div>
-            <div id="invitee-fields" class="invitee-fields" aria-live="polite"></div>
             <input id="selectedInvitees" name="selectedInvitees" type="hidden" />
             <input id="selectedParty" name="selectedParty" type="hidden" />
 
-            <section id="rsvp-preview" class="rsvp-preview" aria-labelledby="rsvp-preview-title" hidden>
-              <div class="rsvp-preview-header">
-                <p class="section-label">Review</p>
-                <h2 id="rsvp-preview-title">Is this RSVP correct?</h2>
-                <p>Please review each guest's choices before sending your final RSVP.</p>
-              </div>
-              <div id="rsvp-preview-list" class="rsvp-preview-list"></div>
-              <div class="rsvp-preview-actions">
-                <button id="edit-rsvp" type="button" class="button button-secondary">Edit RSVP</button>
-                <button id="confirm-rsvp" type="button" class="button button-primary">Yes, submit</button>
-              </div>
-            </section>
             <div class="form-row honeypot" aria-hidden="true">
               <label for="website">Website</label>
               <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
