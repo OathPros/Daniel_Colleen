@@ -55,7 +55,6 @@
   const submitButton = document.getElementById("rsvp-submit");
   const submittedAtClient = document.getElementById("submittedAtClient");
   const guestSearch = document.getElementById("guest-search");
-  const guestOptions = document.getElementById("guest-options");
   const loadPartyButton = document.getElementById("load-party");
   const partyNote = document.getElementById("party-note");
   const selectedInviteesInput = document.getElementById("selectedInvitees");
@@ -85,20 +84,23 @@
   }
 
   function renderGuestOptions() {
-    guestOptions.replaceChildren();
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Choose a guest name";
+
+    guestSearch.replaceChildren(placeholder);
     getAvailableParties().forEach((party) => {
       party.members.forEach((name) => {
         const option = document.createElement("option");
-        option.value = name;
-        option.label = `${name} — party of ${party.members.length}`;
-        guestOptions.append(option);
+        option.value = party.id;
+        option.textContent = `${name} — party of ${party.members.length}`;
+        guestSearch.append(option);
       });
     });
   }
 
-  function findPartyByGuest(name) {
-    const normalized = name.trim().toLowerCase();
-    return getAvailableParties().find((party) => party.members.some((member) => member.toLowerCase() === normalized));
+  function findPartyByGuest(partyId) {
+    return getAvailableParties().find((party) => party.id === partyId);
   }
 
   function updateSelectedInvitees() {
