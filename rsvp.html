@@ -45,6 +45,23 @@
             </div>
 
             <div id="party-note" class="party-note" aria-live="polite"></div>
+
+            <div id="rsvp-details" class="rsvp-details" hidden>
+              <div class="rsvp-details-header">
+                <h3>Complete your RSVP</h3>
+                <p>Let us know who can attend and share any dietary restrictions or allergies.</p>
+              </div>
+              <div id="invitee-responses" class="invitee-responses"></div>
+              <div class="form-row form-row-full">
+                <label for="contactEmail">Best email for RSVP updates</label>
+                <input id="contactEmail" name="contactEmail" type="email" autocomplete="email" />
+              </div>
+              <div class="form-row form-row-full">
+                <label for="message">Anything else we should know?</label>
+                <textarea id="message" name="message" rows="4" placeholder="Accessibility needs, song requests, or a note for Daniel and Colleen"></textarea>
+              </div>
+            </div>
+
             <input id="selectedInvitees" name="selectedInvitees" type="hidden" />
             <input id="selectedParty" name="selectedParty" type="hidden" />
 
