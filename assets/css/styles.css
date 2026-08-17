@@ -2607,7 +2607,8 @@ main > .section:first-child {
 .party-card {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto;
+  align-content: start;
   justify-items: center;
   overflow: visible;
   padding: clamp(1rem, 2.5vw, 1.35rem);
@@ -2671,11 +2672,18 @@ main > .section:first-child {
 }
 
 .party-card-copy {
+  box-sizing: border-box;
   width: min(560px, 100%);
+  align-self: start;
   align-items: center;
   justify-content: flex-start;
-  padding: clamp(1.5rem, 4vw, 2.4rem) clamp(1rem, 4vw, 2rem) clamp(1.4rem, 4vw, 2.2rem);
+  padding: clamp(1rem, 2vw, 1.35rem) clamp(1rem, 4vw, 2rem) clamp(1.4rem, 4vw, 2.2rem);
   text-align: center;
+}
+
+.party-name-pair {
+  white-space: nowrap;
+  font-size: clamp(2rem, 4.5vw, 3.5rem) !important;
 }
 
 .party-section .party-card p:last-child {
