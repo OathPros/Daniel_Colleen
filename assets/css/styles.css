@@ -2721,13 +2721,13 @@ h6 .amp {
   color: var(--cranberry) !important;
 }
 
-/* Let the welcome details flow directly into the gallery without a divider gap. */
+/* Give the welcome details and gallery distinct breathing room. */
 main > .section:first-child {
-  padding-bottom: 0;
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
 }
 
 .gallery-feature-section {
-  padding-top: 0;
+  padding-top: clamp(2.5rem, 5vw, 4.5rem);
 }
 
 .gallery-feature-section::before {
