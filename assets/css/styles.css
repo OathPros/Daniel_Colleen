@@ -2785,3 +2785,12 @@ main > .section:first-child:not(.story-feature-section) {
     grid-template-columns: 1fr;
   }
 }
+
+/* Home page: separate the essentials summary from the gallery. */
+body:has(.intro-card) main > .section:first-child {
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+body:has(.intro-card) .gallery-feature-section {
+  padding-top: clamp(2.5rem, 5vw, 4.5rem);
+}
