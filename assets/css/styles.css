@@ -2364,12 +2364,13 @@ main > .section:first-child .section-panel,
 }
 
 /* Home page final section adjustments */
-main > .section:first-child {
+main > .section:first-child:not(.story-feature-section) {
   padding-bottom: clamp(1.2rem, 2.5vw, 2rem);
 }
 
 .story-feature-section {
   padding-top: 0;
+  padding-bottom: clamp(5rem, 10vw, 9rem);
 }
 
 .story-feature-section::before {
@@ -2722,7 +2723,7 @@ h6 .amp {
 }
 
 /* Let the welcome details flow directly into the gallery without a divider gap. */
-main > .section:first-child {
+main > .section:first-child:not(.story-feature-section) {
   padding-bottom: 0;
 }
 
