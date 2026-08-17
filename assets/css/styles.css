@@ -2673,6 +2673,7 @@ main > .section:first-child {
 .party-card-copy {
   width: min(560px, 100%);
   align-items: center;
+  justify-content: flex-start;
   padding: clamp(1.5rem, 4vw, 2.4rem) clamp(1rem, 4vw, 2rem) clamp(1.4rem, 4vw, 2.2rem);
   text-align: center;
 }
