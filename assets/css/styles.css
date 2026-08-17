@@ -2657,3 +2657,19 @@ main > .section:first-child {
     margin-top: -0.15rem;
   }
 }
+
+/* Keep every heading in the same neutral black across page and card variants. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+h1 .amp,
+h2 .amp,
+h3 .amp,
+h4 .amp,
+h5 .amp,
+h6 .amp {
+  color: #000 !important;
+}
