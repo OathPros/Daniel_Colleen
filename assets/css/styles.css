@@ -1163,6 +1163,10 @@
   transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 
+.map-link {
+  text-decoration: none;
+}
+
 .map-link:hover,
 .map-link:focus-visible,
 .venue-link:hover,
@@ -2736,6 +2740,24 @@ h4 .amp,
 h5 .amp,
 h6 .amp {
   color: #000 !important;
+}
+
+/* Keep the names' ampersand tied to the cranberry action-button palette. */
+.intro-card h1 .amp {
+  color: var(--cranberry) !important;
+}
+
+/* Let the welcome details flow directly into the gallery without a divider gap. */
+main > .section:first-child {
+  padding-bottom: 0;
+}
+
+.gallery-feature-section {
+  padding-top: 0;
+}
+
+.gallery-feature-section::before {
+  display: none;
 }
 
 /* Headings on the dark fellowship panel need the same high contrast as its copy. */
