@@ -2623,7 +2623,8 @@ main > .section:first-child {
 .party-card-photo {
   position: relative;
   z-index: 1;
-  width: min(420px, 100%);
+  width: 100%;
+  max-width: 420px;
   aspect-ratio: 4 / 5;
   min-height: 0;
   overflow: hidden;
@@ -2710,4 +2711,10 @@ h4 .amp,
 h5 .amp,
 h6 .amp {
   color: #000 !important;
+}
+
+/* Headings on the dark fellowship panel need the same high contrast as its copy. */
+.party-section h2,
+.party-section h2 .subhead {
+  color: var(--warm-paper) !important;
 }
