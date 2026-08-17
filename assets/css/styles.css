@@ -2592,6 +2592,7 @@ main > .section:first-child {
 .party-card {
   display: grid;
   grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
   justify-items: center;
   overflow: visible;
   padding: clamp(1rem, 2.5vw, 1.35rem);
