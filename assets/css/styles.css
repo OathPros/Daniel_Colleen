@@ -846,6 +846,21 @@
       color: var(--muted);
     }
 
+    .small-card a {
+      color: var(--cranberry-deep);
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-color: rgba(101, 24, 45, 0.35);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+    }
+
+    .small-card a:hover,
+    .small-card a:focus-visible {
+      color: var(--cranberry);
+      text-decoration-color: currentColor;
+    }
+
     .gallery {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
