@@ -2721,13 +2721,13 @@ h6 .amp {
   color: var(--cranberry) !important;
 }
 
-/* Give the welcome details and gallery distinct breathing room. */
+/* Let the welcome details flow directly into the gallery without a divider gap. */
 main > .section:first-child {
-  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  padding-bottom: 0;
 }
 
 .gallery-feature-section {
-  padding-top: clamp(2.5rem, 5vw, 4.5rem);
+  padding-top: 0;
 }
 
 .gallery-feature-section::before {
@@ -2783,4 +2783,13 @@ main > .section:first-child {
   #ottawa .ottawa-list {
     grid-template-columns: 1fr;
   }
+}
+
+/* Home page: separate the essentials summary from the gallery. */
+body:has(.intro-card) main > .section:first-child {
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+body:has(.intro-card) .gallery-feature-section {
+  padding-top: clamp(2.5rem, 5vw, 4.5rem);
 }
