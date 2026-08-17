@@ -2794,3 +2794,12 @@ body:has(.intro-card) main > .section:first-child {
 body:has(.intro-card) .gallery-feature-section {
   padding-top: clamp(2.5rem, 5vw, 4.5rem);
 }
+
+/* FAQ page: use consistent rounded rectangles and leave breathing room before the footer. */
+#faq {
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+#faq details {
+  border-radius: 18px;
+}
