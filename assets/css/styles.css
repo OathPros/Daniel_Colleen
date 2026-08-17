@@ -752,6 +752,18 @@
       color: var(--muted);
     }
 
+    .faq-link {
+      color: var(--cranberry);
+      font-weight: 700;
+      text-decoration-line: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+    }
+
+    .faq-link:hover {
+      text-decoration-thickness: 2px;
+    }
+
     .story-panel {
       width: min(1180px, 100%);
       margin: 0 auto;
