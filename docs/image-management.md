@@ -4,13 +4,13 @@ The site discovers managed images at build time. Folder contents are the source 
 
 ## Intended folder map
 
-Only `home/hero` exists during the staged migration. Create the other folders when their first manually migrated image is ready.
+The homepage hero and Moments We Love collections are ready for images. Create the other folders when their first manually migrated image is ready.
 
 ```text
 assets/images/
 ├── home/
-│   ├── hero/                 # homepage slideshow (implemented)
-│   └── gallery/              # homepage favourites (planned)
+│   ├── hero/                 # homepage slideshow
+│   └── moments/              # up to 50 homepage Moments We Love photos
 └── story/
     ├── feature/              # story feature photograph (planned)
     └── people/               # wedding-party portraits (planned)
@@ -80,9 +80,24 @@ Do not edit that file manually. `npm run images:check` compares it with a fresh 
 
 The first managed hero image is requested with high priority. Once it loads, managed slides replace the temporary legacy markup. Only the next slide is progressively decoded in advance. One image has no timer or progress UI; two or more loop every nine seconds. Reduced-motion visitors see only the first image.
 
+## Moments We Love workflow
+
+Place as many as 50 numbered images in `assets/images/home/moments/` and run `npm run images:build`. The gallery uses natural filename order, so `01.webp` through `50.webp` appear in that order. It automatically creates every thumbnail and includes every photo in the lightbox; no HTML edits are needed.
+
+Optional crop positions and accessible descriptions belong in `moments.config.json`:
+
+```json
+{
+  "01.webp": { "position": "center 35%", "alt": "Daniel and Colleen beside the lake" },
+  "02.webp": { "position": "60% center", "caption": "An autumn walk" }
+}
+```
+
+When the folder is empty, the six temporary gallery images remain visible. As soon as the folder contains a photo and the manifest is rebuilt, the managed collection replaces all of those placeholders.
+
 ## Temporary migration state
 
-Until at least one file is manually placed in `assets/images/home/hero`, the manifest contains an empty `home/hero` collection. The homepage deliberately retains the existing embedded five-image slideshow as a temporary compatibility fallback. Adding a managed image and regenerating the manifest makes the managed renderer take over automatically.
+The homepage deliberately retains the embedded five-image slideshow as a compatibility fallback whenever `home/hero` is empty. With one or more hero files present, rebuilding the manifest makes the managed renderer take over automatically.
 
 ## File guidance
 

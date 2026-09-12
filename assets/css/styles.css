@@ -950,6 +950,17 @@
       background-position: center 52%;
     }
 
+    @media (min-width: 761px) {
+      .gallery[data-gallery-mode="managed"] .gallery-item {
+        grid-column: span 4;
+      }
+
+      .gallery[data-gallery-mode="managed"] .gallery-item:nth-child(5n + 1),
+      .gallery[data-gallery-mode="managed"] .gallery-item:nth-child(5n + 2) {
+        grid-column: span 6;
+      }
+    }
+
     .footer {
       flex-shrink: 0;
       padding: clamp(3rem, 7vw, 5rem) clamp(1rem, 5vw, 5rem);

@@ -2,9 +2,43 @@
 window.WEDDING_IMAGE_MANIFEST = {
   "schemaVersion": 1,
   "collections": {
-    "home/hero": []
+    "home/hero": [
+      {
+        "src": "assets/images/home/hero/13.webp",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/home/hero/19.webp",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/home/hero/20.webp",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/home/hero/26.webp",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/home/hero/28.webp",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/home/hero/31.webp",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/home/hero/47.webp",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/home/hero/49.webp",
+        "position": "center"
+      }
+    ],
+    "home/moments": []
   },
   "warnings": [
-    "home/hero: collection is empty"
+    "home/moments: collection is empty"
   ]
 };
