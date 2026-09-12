@@ -29,7 +29,7 @@
   </header>
 
   <main id="main">
-    <section id="rsvp" class="section" aria-label="RSVP">
+    <section id="rsvp" class="section rsvp-section" aria-label="RSVP">
       <div class="section-panel">
         <div class="section-content centered">
           <div class="rsvp-intro"><p class="rsvp-eyebrow">Daniel &amp; Colleen · September 11, 2027</p><h1 id="rsvp-page-title" class="rsvp-page-title">RSVP</h1></div>
@@ -46,7 +46,7 @@
               </div>
               <button type="button" class="button button-secondary" id="retry-search" hidden>Try again</button>
               <div id="lookup-security"></div></section>
-            <section data-step="confirm" hidden aria-labelledby="confirm-title"><h2 id="confirm-title" tabindex="-1">Is this your invitation?</h2>
+            <section data-step="confirm" hidden aria-labelledby="confirm-title"><h2 id="confirm-title" tabindex="-1">Is this your party?</h2>
               <p>We’ve reserved places for the following guests.</p><ul id="invitation-names" class="invitation-names"></ul>
               <div class="rsvp-actions"><button type="button" class="button button-primary" data-go="guests">Yes, continue</button><button type="button" class="button button-secondary" id="search-again">Search again</button></div></section>
             <section data-step="guests" hidden aria-labelledby="guests-title"><h2 id="guests-title" tabindex="-1">Who will be joining us?</h2>
@@ -81,8 +81,8 @@
               <div class="rsvp-review-heading"><h3>Contact details</h3><button type="button" class="button button-secondary" data-go="contact">Edit contact details</button></div><div id="review-contact"></div>
               <p class="rsvp-final-note">Once submitted, changes need to be made through Daniel or Colleen.</p><div id="submit-security"></div>
               <div class="rsvp-actions"><button id="rsvp-submit" type="submit" class="button button-primary">Send our RSVP</button><button type="button" class="button button-secondary" data-go="contact">Back</button></div></section>
-            <section data-step="success" hidden aria-labelledby="success-title"><h1 id="success-title" class="rsvp-page-title" tabindex="-1">Thank you for letting us know</h1>
-              <p>Your RSVP has been saved. We’re so grateful you took the time to respond.</p><p>To make a change, please contact Daniel or Colleen.</p></section>
+            <section data-step="success" hidden aria-labelledby="success-title"><h1 id="success-title" tabindex="-1">RSVP Received</h1>
+              <p>Thank you for your RSVP.</p><p>If you need any changes made, please contact Daniel or Colleen.</p></section>
             <section data-step="closed" hidden aria-labelledby="closed-title"><h2 id="closed-title" tabindex="-1">Your invitation has a response</h2>
               <p>This party has already RSVPed. To make a change, please contact Daniel or Colleen.</p></section>
             <div class="form-row honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>

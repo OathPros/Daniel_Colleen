@@ -37,7 +37,7 @@ function focusAt(element) {
 function showStep(next, focus = true) {
   step = next; clearErrors(); status();
   steps.forEach(section => { section.hidden = section.dataset.step !== next; });
-  $("rsvp-page-title").hidden = next === "success";
+  $("rsvp").classList.toggle("rsvp-success", next === "success");
   const index = ["confirm", "guests", "contact", "review"].indexOf(next);
   $("rsvp-progress").hidden = index < 0;
   $("rsvp-progress").textContent = index < 0 ? "" : `Step ${index + 1} of 4 · ${["Your invitation", "Your guests", "Contact details", "Review"][index]}`;
@@ -231,8 +231,10 @@ async function lookup(name) {
 function renderParty() {
   party.guests.forEach(guest => {
     $("invitation-names").append(node("li", guest.name));
-    const card = node("fieldset", null, "invitee-response"); card.dataset.guestId = guest.id;
-    card.append(node("legend", guest.name));
+    const card = node("section", null, "invitee-response"); card.dataset.guestId = guest.id;
+    card.setAttribute("role", "group");
+    const guestName = node("h3", guest.name, "invitee-name"); guestName.id = `invitee-name-${guest.id}`;
+    card.setAttribute("aria-labelledby", guestName.id); card.append(guestName);
     const question = node("p", "Are you able to attend our wedding?", "attendance-question");
     question.id = `attendance-question-${guest.id}`; card.append(question);
     const attendance = node("div", null, "attendance-options");

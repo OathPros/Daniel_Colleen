@@ -187,10 +187,10 @@ async function expectBalancedLayout(page) {
 
 async function expectGuestCards(page) {
   for (const card of await page.locator('.invitee-response').all()) {
-    await expect(card).toHaveAccessibleName(await card.locator('legend').textContent());
+    await expect(card).toHaveAccessibleName(await card.locator('.invitee-name').textContent());
     await expect(card.getByRole('group', { name: 'Are you able to attend our wedding?', exact: true })).toBeVisible();
     const layout = await card.evaluate(element => {
-      const card = element.getBoundingClientRect(), name = element.querySelector('legend').getBoundingClientRect();
+      const card = element.getBoundingClientRect(), name = element.querySelector('.invitee-name').getBoundingClientRect();
       const question = element.querySelector('.attendance-question').getBoundingClientRect();
       return {
         topPadding: name.top - card.top, leftPadding: name.left - card.left,
@@ -211,7 +211,13 @@ for (const width of [320, 375, 390, 768, 1280]) test(`RSVP presentation through 
   await install(page);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('RSVP');
   await expectBalancedLayout(page);
-  await find(page); await expectBalancedLayout(page);
+  await find(page);
+  await expect(page.locator('#confirm-title')).toHaveText('Is this your party?');
+  await expect(page.locator('#rsvp-progress')).toHaveText('Step 1 of 4 · Your invitation');
+  expect(await page.locator('#confirm-title').evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
+  await expectBalancedLayout(page);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.screenshot({ path: `node_modules/.cache/rsvp-confirm-${width}.png`, fullPage: true });
   await page.getByRole('button', { name: 'Yes, continue' }).click();
   await expect(page.locator('#rsvp-progress')).toHaveText('Step 2 of 4 · Your guests');
   await expectGuestCards(page);
@@ -242,13 +248,37 @@ for (const width of [320, 375, 390, 768, 1280]) test(`RSVP presentation through 
   await expect(page.getByRole('heading', { name: 'Review your RSVP', exact: true })).toBeFocused();
   await expectBalancedLayout(page);
   await page.locator('#rsvp-submit').click();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Thank you for letting us know');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('RSVP Received');
   await expect(page.locator('#success-title')).toBeFocused();
-  await expect(page.locator('#rsvp-page-title')).toBeHidden();
+  await expect(page.locator('.rsvp-intro')).toBeHidden();
   await expect(page.locator('#rsvp-progress')).toBeHidden();
-  await expect(page.locator('[data-step="success"]')).toContainText('Your RSVP has been saved. We’re so grateful you took the time to respond.');
+  await expect(page.locator('[data-step="success"] > p')).toHaveText([
+    'Thank you for your RSVP.',
+    'If you need any changes made, please contact Daniel or Colleen.',
+  ]);
+  expect(await page.locator('#success-title').evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
+  const successLayout = await page.locator('[data-step="success"]').evaluate(element => {
+    const heading = element.querySelector('h1').getBoundingClientRect();
+    return { height: element.getBoundingClientRect().height, headingHeight: heading.height, headingWidth: heading.width };
+  });
+  expect(successLayout.height).toBeLessThan(320);
+  if (width === 1280) expect(successLayout.headingHeight).toBeLessThan(70);
   await expectBalancedLayout(page);
   await page.screenshot({ path: `node_modules/.cache/rsvp-success-${width}.png`, fullPage: true });
+});
+
+test('single guest card renders with its complete hierarchy inside the border', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  const single = [{ id: 10, name: 'Sam Czmielewski' }];
+  await install(page, { lookup: route => route.fulfill({ json: { ...invitation, party: { ...invitation.party, guests: single } } }) });
+  await find(page); await page.getByRole('button', { name: 'Yes, continue' }).click();
+  await page.locator('#attendance-10').check();
+  await expectGuestCards(page);
+  await expect(page.locator('.invitee-response')).toContainText('Sam Czmielewski');
+  await expect(page.getByLabel('Select your meal preference')).toBeVisible();
+  await expect(page.getByLabel('Any dietary restrictions or allergies? (optional)')).toBeVisible();
+  await expectBalancedLayout(page);
+  await page.screenshot({ path: 'node_modules/.cache/rsvp-single-guest-390.png', fullPage: true });
 });
 
 for (const width of [320, 375, 390, 768, 1280]) test(`long invitation fits ${width}px`, async ({ page }) => {
