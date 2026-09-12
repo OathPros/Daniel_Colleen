@@ -50,7 +50,7 @@ npm run import -- private/guests.private.csv --env preview
 npm run import -- private/guests.private.csv --env production
 ```
 
-The temporary SQL is created outside the repository with owner-only permissions and removed afterward. The importer queries D1 after the import and fails unless the resulting counts exactly equal the parsed CSV counts (and, for production, 33/63).
+The temporary SQL is created outside the repository with owner-only permissions and removed afterward, including when Wrangler fails. The importer invokes the project-local Wrangler installation through Node (rather than a platform shell), so file paths and the verification SQL remain intact arguments on Windows, macOS, and Linux. The importer queries D1 after the import and fails unless the resulting counts exactly equal the parsed CSV counts (and, for production, 33/63). D1 remote execution controls transaction rollback, so the generated file intentionally does not contain explicit transaction statements.
 
 ## Configure the Turnstile secret
 
