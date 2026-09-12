@@ -7,7 +7,7 @@
   <meta name="description" content="Wedding website for Daniel and Colleen." />
   <title>RSVP | Daniel &amp; Colleen</title>
   <link rel="stylesheet" href="assets/css/styles.css" />
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+  <link rel="stylesheet" href="assets/css/rsvp.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -29,36 +29,32 @@
   </header>
 
   <main id="main">
-    <section id="rsvp" class="section" aria-labelledby="guest-lookup-title">
+    <section id="rsvp" class="section" aria-label="RSVP">
       <div class="section-panel">
         <div class="section-content centered">
+          <div class="rsvp-intro"><p class="rsvp-eyebrow">Daniel &amp; Colleen · September 11, 2027</p><h1>We hope you’ll join us</h1></div>
+          <noscript><p>Please enable JavaScript to RSVP, or contact Daniel or Colleen for help.</p></noscript>
           <form id="rsvp-form" class="rsvp-form" novalidate>
-
-            <div class="guest-lookup" aria-labelledby="guest-lookup-title">
-              <div>
-                <h2 id="guest-lookup-title">Find your invitation</h2>
-                <p>Enter your full name.</p>
+            <p id="rsvp-progress" class="rsvp-progress" hidden></p>
+            <div id="rsvp-errors" class="rsvp-errors" tabindex="-1" hidden aria-labelledby="rsvp-errors-title"><h3 id="rsvp-errors-title">A few details need your attention</h3><ul id="rsvp-error-list"></ul></div>
+            <section data-step="search"  aria-labelledby="search-title"><h2 id="search-title" tabindex="-1">Find your invitation</h2>
+              <p>Start typing your first or last name, then choose your name below.</p>
+              <div class="form-row rsvp-search"><label for="guest-search">Your name</label>
+                <input id="guest-search" name="guestSearch" type="text" maxlength="120" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="guest-suggestions" aria-describedby="search-help" />
+                <ul id="guest-suggestions" role="listbox" aria-label="Matching names" hidden></ul>
+                <p id="search-help" class="form-help">Enter at least two letters. You can also try your surname.</p>
               </div>
-              <div class="guest-lookup-controls">
-                <label for="guest-search">Full name</label>
-                <input id="guest-search" name="guestSearch" type="text" maxlength="120" autocomplete="name" required />
-                <button id="load-party" type="button" class="button button-secondary">Find invitation</button>
-              </div>
-            </div>
-
-            <div class="turnstile-wrap">
-              <div class="cf-turnstile" data-sitekey="0x4AAAAAAExUPO93OFHgyyHq" data-theme="light"></div>
-              <p class="form-help">The security check is required for lookup and again when submitting.</p>
-            </div>
-
-            <div id="party-note" class="party-note" aria-live="polite"></div>
-
-            <div id="rsvp-details" class="rsvp-details" hidden>
-              <div class="rsvp-details-header">
-                <h3>Complete your RSVP</h3>
-                <p>Let us know who can attend and share any dietary restrictions or allergies.</p>
-              </div>
+              <button type="button" class="button button-secondary" id="retry-search" hidden>Try again</button>
+              <div id="lookup-security"></div></section>
+            <section data-step="confirm" hidden aria-labelledby="confirm-title"><h2 id="confirm-title" tabindex="-1">Is this your invitation?</h2>
+              <p>We’ve reserved places for the following guests.</p><ul id="invitation-names" class="invitation-names"></ul>
+              <div class="rsvp-actions"><button type="button" class="button button-primary" data-go="guests">Yes, continue</button><button type="button" class="button button-secondary" id="search-again">Search again</button></div></section>
+            <section data-step="guests" hidden aria-labelledby="guests-title"><h2 id="guests-title" tabindex="-1">Who will be joining us?</h2>
+              <p>Please respond for everyone on your invitation.</p><p id="answered-count" class="form-help" role="status"></p>
               <div id="invitee-responses" class="invitee-responses"></div>
+              <div class="rsvp-actions"><button type="button" class="button button-primary" id="guests-continue">Continue</button><button type="button" class="button button-secondary" data-go="confirm">Back</button></div></section>
+            <section data-step="contact" hidden aria-labelledby="contact-title"><h2 id="contact-title" tabindex="-1">A few ways to keep in touch</h2>
+              <p>Please share one email and mailing address for your invitation, even if you’re unable to attend.</p>
               <div class="form-row form-row-full">
                 <label for="contactEmail">Best email for contacting your party</label>
                 <input id="contactEmail" name="contactEmail" type="email" maxlength="254" autocomplete="email" required />
@@ -75,21 +71,23 @@
                 </div>
               </fieldset>
               <div class="form-row form-row-full">
-                <label for="message">Anything else you'd like to share with us?</label>
+                <label for="message">A note for Daniel &amp; Colleen <span>(optional)</span></label>
                 <textarea id="message" name="message" rows="4" maxlength="2000" placeholder="Accessibility needs, song requests, or a note for Daniel and Colleen"></textarea>
               </div>
-            </div>
-
-            <input id="selectedParty" name="selectedParty" type="hidden" />
-
-            <div class="form-row honeypot" aria-hidden="true">
-              <label for="website">Website</label>
-              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
-            </div>
-
-            <button id="rsvp-submit" type="submit" class="button button-primary" hidden>Submit RSVP</button>
-
-            <p id="rsvp-status" class="rsvp-status" role="status" aria-live="polite"></p>
+              <div class="rsvp-actions"><button type="button" class="button button-primary" id="contact-continue">Review your RSVP</button><button type="button" class="button button-secondary" data-go="guests">Back</button></div></section>
+            <section data-step="review" hidden aria-labelledby="review-title"><h2 id="review-title" tabindex="-1">Everything look right?</h2>
+              <p>Take a moment to check your response before sending it to us.</p>
+              <div class="rsvp-review-heading"><h3>Your guests</h3><button type="button" class="button button-secondary" data-go="guests">Edit guest responses</button></div><div id="review-guests"></div>
+              <div class="rsvp-review-heading"><h3>Contact details</h3><button type="button" class="button button-secondary" data-go="contact">Edit contact details</button></div><div id="review-contact"></div>
+              <p class="rsvp-final-note">Once submitted, changes need to be made through Daniel or Colleen.</p><div id="submit-security"></div>
+              <div class="rsvp-actions"><button id="rsvp-submit" type="submit" class="button button-primary">Send our RSVP</button><button type="button" class="button button-secondary" data-go="contact">Back</button></div></section>
+            <section data-step="success" hidden aria-labelledby="success-title"><h2 id="success-title" tabindex="-1">Thank you for letting us know</h2>
+              <p>Your RSVP has been saved. We’re so grateful you took the time to respond.</p><p>To make a change, please contact Daniel or Colleen.</p></section>
+            <section data-step="closed" hidden aria-labelledby="closed-title"><h2 id="closed-title" tabindex="-1">Your invitation has a response</h2>
+              <p>This party has already RSVPed. To make a change, please contact Daniel or Colleen.</p></section>
+            <div class="form-row honeypot" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
+            <div id="security-widget" class="turnstile-wrap" data-sitekey="0x4AAAAAAExUPO93OFHgyyHq" hidden></div>
+            <p id="rsvp-status" class="rsvp-status" role="status" aria-live="polite" aria-atomic="true"></p>
           </form>
         </div>
       </div>
@@ -102,5 +100,6 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script type="module" src="assets/js/rsvp.js"></script>
 </body>
 </html>
