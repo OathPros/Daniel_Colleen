@@ -1,0 +1,13 @@
+{
+  "name": "daniel-colleen-rsvp",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check worker/src/index.js && node --check assets/js/main.js && node --check scripts/import-guests.mjs",
+    "import": "node scripts/import-guests.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.35.0"
+  }
+}

@@ -1,0 +1,5 @@
+private/
+*.private.csv
+.dev.vars*
+.wrangler/
+node_modules/

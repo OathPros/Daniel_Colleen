@@ -51,221 +51,117 @@ document.documentElement.classList.add("js");
   const form = document.getElementById("rsvp-form");
   if (!form) return;
 
-  const endpoint = "https://YOUR-WORKER-SUBDOMAIN.workers.dev/rsvp";
-  const submittedPartiesKey = "daniel-colleen-submitted-rsvp-parties";
-
-  const rsvpParties = [
-    { id: "darrow-mustang", members: ["Darrow O'Lykos", "Virginia au Augustus"] },
-    { id: "sevro-victra", members: ["Sevro au Barca", "Victra au Julii"] },
-    { id: "cassius-lysander", members: ["Cassius au Bellona", "Lysander au Lune"] },
-    { id: "eo-ragnar", members: ["Eo of Lykos", "Ragnar Volarus"] },
-    { id: "holiday-trigg", members: ["Holiday ti Nakamura", "Trigg ti Nakamura"] },
-    { id: "quicksilver-matteo", members: ["Quicksilver", "Matteo"] },
-    { id: "roque-tactus", members: ["Roque au Fabii", "Tactus au Rath"] },
-    { id: "lorn-arcos", members: ["Lorn au Arcos", "Aja au Grimmus"] },
-    { id: "kavax-daxo", members: ["Kavax au Telemanus", "Daxo au Telemanus"] },
-    { id: "pax-sophocles", members: ["Pax au Telemanus", "Sophocles"] },
-    { id: "fitchner-orion", members: ["Fitchner au Barca", "Orion xe Aquarii"] },
-    { id: "theodora-alexandar", members: ["Theodora", "Alexandar au Arcos"] },
-    { id: "samwise-rosie", members: ["Samwise Gamgee", "Rosie Cotton"] },
-    { id: "frodo-bilbo", members: ["Frodo Baggins", "Bilbo Baggins"] },
-    { id: "aragorn-arwen", members: ["Aragorn", "Arwen Undómiel"] },
-    { id: "faramir-eowyn", members: ["Faramir", "Éowyn"] },
-    { id: "merry-pippin", members: ["Meriadoc Brandybuck", "Peregrin Took"] },
-    { id: "legolas-gimli", members: ["Legolas Greenleaf", "Gimli son of Glóin"] },
-    { id: "gandalf-galadriel", members: ["Gandalf the Grey", "Galadriel"] },
-    { id: "elrond-celeborn", members: ["Elrond", "Celeborn"] },
-    { id: "theoden-eomer", members: ["Théoden", "Éomer"] },
-    { id: "boromir-denethor", members: ["Boromir", "Denethor II"] },
-    { id: "isildur-elendil", members: ["Isildur", "Elendil"] },
-    { id: "treebeard-radagast", members: ["Treebeard", "Radagast the Brown"] },
-    { id: "bryce-hunt", members: ["Bryce Quinlan", "Hunt Athalar"] },
-    { id: "rhysand-feyre", members: ["Rhysand", "Feyre Archeron"] },
-    { id: "kaz-inej", members: ["Kaz Brekker", "Inej Ghafa"] },
-    { id: "alina-mal", members: ["Alina Starkov", "Malyen Oretsev"] },
-    { id: "elizabeth-darcy", members: ["Elizabeth Bennet", "Fitzwilliam Darcy"] },
-    { id: "hermione-ron", members: ["Hermione Granger", "Ron Weasley"] }
-  ];
-
   const status = document.getElementById("rsvp-status");
+  const search = document.getElementById("guest-search");
+  const lookupButton = document.getElementById("load-party");
   const submitButton = document.getElementById("rsvp-submit");
-  const submittedAtClient = document.getElementById("submittedAtClient");
-  const guestSearch = document.getElementById("guest-search");
-  const loadPartyButton = document.getElementById("load-party");
   const partyNote = document.getElementById("party-note");
-  const rsvpDetails = document.getElementById("rsvp-details");
-  const inviteeResponses = document.getElementById("invitee-responses");
-  const selectedInviteesInput = document.getElementById("selectedInvitees");
-  const selectedPartyInput = document.getElementById("selectedParty");
-  const selectedInvitees = [];
-  let selectedPartyId = "";
+  const details = document.getElementById("rsvp-details");
+  const responses = document.getElementById("invitee-responses");
+  const partyInput = document.getElementById("selectedParty");
+  let party = null;
 
-  function getSubmittedParties() {
-    try { return JSON.parse(window.localStorage.getItem(submittedPartiesKey)) || []; }
-    catch { return []; }
-  }
-
-  function saveSubmittedParty(partyId) {
-    const parties = new Set(getSubmittedParties());
-    parties.add(partyId);
-    window.localStorage.setItem(submittedPartiesKey, JSON.stringify([...parties]));
-  }
-
-  function setStatus(message, state) {
+  function setStatus(message, state = "") {
     status.textContent = message;
-    status.dataset.state = state || "";
+    status.dataset.state = state;
   }
 
-  function getAvailableParties() {
-    const submitted = new Set(getSubmittedParties());
-    return rsvpParties.filter((party) => !submitted.has(party.id));
+  function turnstileToken() {
+    return window.turnstile?.getResponse() || "";
   }
 
-  function renderGuestOptions() {
-    const placeholder = document.createElement("option");
-    placeholder.value = "";
-    placeholder.textContent = "Choose a guest name";
-
-    guestSearch.replaceChildren(placeholder);
-    getAvailableParties().forEach((party) => {
-      party.members.forEach((name) => {
-        const option = document.createElement("option");
-        option.value = party.id;
-        option.textContent = `${name} — party of ${party.members.length}`;
-        guestSearch.append(option);
-      });
-    });
+  function resetTurnstile() {
+    window.turnstile?.reset();
   }
 
-  function findPartyByGuest(partyId) {
-    return getAvailableParties().find((party) => party.id === partyId);
+  function addOption(select, value, text) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = text;
+    select.append(option);
   }
 
-  function updateSelectedInvitees() {
-    selectedInviteesInput.value = selectedInvitees.join(", ");
-    selectedPartyInput.value = selectedPartyId;
-  }
-
-  function inviteeFieldId(name, suffix) {
-    return `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${suffix}`;
-  }
-
-  function renderInviteeResponses() {
-    inviteeResponses.replaceChildren();
-    rsvpDetails.hidden = !selectedInvitees.length;
-
-    selectedInvitees.forEach((name) => {
+  function renderParty(found) {
+    party = found;
+    partyInput.value = found.publicId;
+    responses.replaceChildren();
+    partyNote.textContent = `Invitation found for ${found.partyName}.`;
+    found.guests.forEach((guest) => {
+      const saved = guest;
       const card = document.createElement("fieldset");
       card.className = "invitee-response";
-
+      card.dataset.guestId = String(guest.id);
       const legend = document.createElement("legend");
-      legend.textContent = name;
-      card.append(legend);
-
-      const attendanceRow = document.createElement("div");
-      attendanceRow.className = "attendance-options";
-
-      ["Joyfully accepts", "Regretfully declines"].forEach((label, index) => {
-        const optionLabel = document.createElement("label");
+      legend.textContent = guest.name;
+      const attendance = document.createElement("div");
+      attendance.className = "attendance-options";
+      for (const [value, label] of [["yes", "Yes"], ["no", "No"]]) {
+        const wrapper = document.createElement("label");
         const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = `attendance[${name}]`;
-        radio.value = index === 0 ? "accepts" : "declines";
-        radio.required = true;
-        optionLabel.append(radio, document.createTextNode(label));
-        attendanceRow.append(optionLabel);
-      });
-
-      const dietId = inviteeFieldId(name, "dietary");
-      const dietaryRow = document.createElement("div");
-      dietaryRow.className = "form-row";
-      dietaryRow.innerHTML = `
-        <label for="${dietId}">Dietary restrictions or allergies</label>
-        <input id="${dietId}" name="dietary[${name}]" type="text" autocomplete="off" placeholder="None, vegetarian, gluten-free, etc." />
-      `;
-
-      card.append(attendanceRow, dietaryRow);
-      inviteeResponses.append(card);
+        radio.type = "radio"; radio.name = `attendance-${guest.id}`; radio.value = value; radio.required = true;
+        radio.checked = saved.attending === value;
+        wrapper.append(radio, document.createTextNode(label)); attendance.append(wrapper);
+      }
+      const dinnerRow = document.createElement("div"); dinnerRow.className = "form-row guest-dinner";
+      const dinnerLabel = document.createElement("label"); dinnerLabel.htmlFor = `dinner-${guest.id}`; dinnerLabel.textContent = "Dinner";
+      const dinner = document.createElement("select"); dinner.id = `dinner-${guest.id}`; dinner.dataset.field = "dinner";
+      addOption(dinner, "", "Choose dinner"); addOption(dinner, "beef", "Beef"); addOption(dinner, "chicken", "Chicken"); addOption(dinner, "vegetarian", "Vegetarian");
+      dinner.value = saved.dinnerChoice || ""; dinnerRow.append(dinnerLabel, dinner);
+      const dietaryRow = document.createElement("div"); dietaryRow.className = "form-row";
+      const dietaryLabel = document.createElement("label"); dietaryLabel.htmlFor = `dietary-${guest.id}`; dietaryLabel.textContent = "Dietary restrictions or allergies";
+      const dietary = document.createElement("input"); dietary.id = `dietary-${guest.id}`; dietary.dataset.field = "dietary"; dietary.maxLength = 500; dietary.value = saved.dietaryRestrictions || "";
+      dietaryRow.append(dietaryLabel, dietary); card.append(legend, attendance, dinnerRow, dietaryRow); responses.append(card);
+      const updateDinner = () => { const yes = card.querySelector('input[type="radio"]:checked')?.value === "yes"; dinner.required = yes; dinner.disabled = !yes; if (!yes) dinner.value = ""; };
+      attendance.addEventListener("change", updateDinner); updateDinner();
     });
+    const saved = found.rsvp || {};
+    for (const [id, key] of [["contactEmail", "contactEmail"], ["addressLine1", "addressLine1"], ["addressLine2", "addressLine2"], ["city", "city"], ["provinceState", "provinceState"], ["postalCode", "postalCode"], ["country", "country"], ["message", "message"]]) {
+      document.getElementById(id).value = saved[key] || "";
+    }
+    details.hidden = false; submitButton.hidden = false;
   }
 
-  function clearParty() {
-    selectedInvitees.splice(0, selectedInvitees.length);
-    selectedPartyId = "";
-    partyNote.textContent = "";
-    renderInviteeResponses();
-    updateSelectedInvitees();
+  async function post(path, body) {
+    const response = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.message || "We could not process that request.");
+    return result;
   }
 
-  function loadParty() {
-    const party = findPartyByGuest(guestSearch.value);
-    if (!party) {
-      setStatus("Please choose a name from the approved RSVP list.", "error");
-      guestSearch.focus();
-      return;
-    }
-    clearParty();
-    selectedPartyId = party.id;
-    selectedInvitees.push(...party.members);
-    partyNote.textContent = `Loaded ${party.members.length} guest${party.members.length === 1 ? "" : "s"}: ${party.members.join(", ")}.`;
-    guestSearch.value = "";
-    renderInviteeResponses();
-    updateSelectedInvitees();
-    setStatus("", "");
-  }
-
-  loadPartyButton.addEventListener("click", loadParty);
-  guestSearch.addEventListener("change", () => { if (guestSearch.value) loadParty(); });
-  renderGuestOptions();
-  renderInviteeResponses();
-  updateSelectedInvitees();
-
-  form.addEventListener("submit", async function (event) {
-    event.preventDefault();
-    updateSelectedInvitees();
-    if (!selectedInvitees.length) {
-      setStatus("Please choose a guest from the approved RSVP list before submitting.", "error");
-      guestSearch.focus();
-      return;
-    }
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
-    submittedAtClient.value = new Date().toISOString();
-    const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
-    payload.selectedInvitees = selectedInvitees;
-    payload.selectedParty = selectedPartyId;
-    payload.inviteeResponses = selectedInvitees.map((name) => ({
-      name,
-      attendance: formData.get(`attendance[${name}]`) || "",
-      dietary: formData.get(`dietary[${name}]`) || ""
-    }));
-
-    submitButton.disabled = true;
-    setStatus("Submitting your RSVP...", "pending");
-
+  async function lookup() {
+    const name = search.value.trim();
+    if (!name) { search.reportValidity(); return; }
+    const token = turnstileToken();
+    if (!token) { setStatus("Please complete the security check.", "error"); return; }
+    lookupButton.disabled = true; setStatus("Looking for your invitation…", "pending");
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.message || "The RSVP could not be submitted.");
+      const result = await post("/api/rsvp/lookup", { name, website: form.website.value, turnstileToken: token });
+      renderParty(result.party); setStatus("Please complete the RSVP below, then complete the refreshed security check.", "success");
+    } catch (error) { setStatus(error.message, "error"); }
+    finally { lookupButton.disabled = false; resetTurnstile(); }
+  }
 
-      if (selectedPartyId) saveSubmittedParty(selectedPartyId);
-      form.reset();
-      clearParty();
-      renderGuestOptions();
-      setStatus("Thank you — your RSVP has been received. This party has been removed from the RSVP list on this device.", "success");
-    } catch (error) {
-      console.error(error);
-      setStatus("Sorry, the RSVP could not be submitted. Please try again or contact us directly.", "error");
-    } finally {
-      submitButton.disabled = false;
-    }
+  lookupButton.addEventListener("click", lookup);
+  search.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); lookup(); } });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!party) return;
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const token = turnstileToken();
+    if (!token) { setStatus("Please complete the security check again before submitting.", "error"); return; }
+    const guests = [...responses.querySelectorAll(".invitee-response")].map((card) => ({
+      id: Number(card.dataset.guestId),
+      attending: card.querySelector('input[type="radio"]:checked')?.value,
+      dinnerChoice: card.querySelector('[data-field="dinner"]').value || null,
+      dietaryRestrictions: card.querySelector('[data-field="dietary"]').value
+    }));
+    const body = { partyId: partyInput.value, guests, turnstileToken: token, website: form.website.value };
+    for (const key of ["contactEmail", "addressLine1", "addressLine2", "city", "provinceState", "postalCode", "country", "message"]) body[key] = form.elements[key].value;
+    submitButton.disabled = true; setStatus("Saving your RSVP…", "pending");
+    try { await post("/api/rsvp/submit", body); resetTurnstile(); setStatus("Thank you — your RSVP has been saved. You may look up your invitation again if you need to update it.", "success"); }
+    catch (error) { setStatus(error.message, "error"); resetTurnstile(); }
+    finally { submitButton.disabled = false; }
   });
 })();
 
