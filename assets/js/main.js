@@ -1,6 +1,42 @@
 // Daniel & Colleen wedding site
 // Lightweight helpers for the static GitHub Pages version.
 
+document.documentElement.classList.add("js");
+
+(function () {
+  const menuButton = document.querySelector(".menu-toggle");
+  const navigation = document.getElementById("main-navigation");
+  if (!menuButton || !navigation) return;
+
+  function setMenuOpen(isOpen) {
+    navigation.classList.toggle("is-open", isOpen);
+    navigation.toggleAttribute("data-open", isOpen);
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+  }
+
+  menuButton.addEventListener("click", () => {
+    setMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
+  });
+
+  navigation.addEventListener("click", (event) => {
+    if (event.target.closest("a")) setMenuOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || menuButton.getAttribute("aria-expanded") !== "true") return;
+    setMenuOpen(false);
+    menuButton.focus();
+  });
+
+  document.addEventListener("focusin", (event) => {
+    if (!navigation.contains(event.target) && event.target !== menuButton) setMenuOpen(false);
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!navigation.contains(event.target) && event.target !== menuButton) setMenuOpen(false);
+  });
+})();
+
 (function () {
   const current = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.nav a').forEach((link) => {
