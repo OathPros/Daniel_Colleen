@@ -125,6 +125,22 @@ document.documentElement.classList.add("js");
   const lightbox = document.querySelector("[data-gallery-lightbox]");
   if (!gallery || !lightbox) return;
 
+  const managedImages = window.WEDDING_IMAGE_MANIFEST?.collections?.["home/moments"];
+  if (Array.isArray(managedImages) && managedImages.length > 0) {
+    gallery.replaceChildren(...managedImages.map((entry, index) => {
+      const item = document.createElement("button");
+      const description = entry.alt || entry.caption || `Daniel and Colleen memory ${index + 1}`;
+      item.className = "gallery-item managed-gallery-item";
+      item.type = "button";
+      item.setAttribute("aria-label", `Open photo: ${description}`);
+      item.style.backgroundImage = `url("${entry.src}")`;
+      item.style.backgroundPosition = entry.position || "center";
+      item.dataset.fullImage = entry.src;
+      return item;
+    }));
+    gallery.dataset.galleryMode = "managed";
+  }
+
   const items = Array.from(gallery.querySelectorAll(".gallery-item"));
   const image = lightbox.querySelector(".gallery-lightbox__image");
   const caption = lightbox.querySelector("[data-gallery-caption]");
@@ -138,8 +154,9 @@ document.documentElement.classList.add("js");
   function showPhoto(index) {
     currentIndex = (index + items.length) % items.length;
     const item = items[currentIndex];
-    const style = window.getComputedStyle(item);
-    image.style.backgroundImage = style.backgroundImage;
+    image.style.backgroundImage = item.dataset.fullImage
+      ? `url("${item.dataset.fullImage}")`
+      : window.getComputedStyle(item).backgroundImage;
     image.setAttribute("aria-label", item.getAttribute("aria-label")?.replace("Open photo: ", "") || "Gallery photo");
     caption.textContent = `${currentIndex + 1} / ${items.length}`;
   }
