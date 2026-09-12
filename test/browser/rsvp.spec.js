@@ -175,12 +175,90 @@ test("rate limiting gives a retry state without automatic request loops", async 
   await expect(page.locator("#rsvp-status")).toContainText("wait a minute");
 });
 
-for (const width of [375, 768, 1280]) test(`long invitation fits ${width}px`, async ({ page }) => {
+async function expectBalancedLayout(page) {
+  const layout = await page.evaluate(() => {
+    const panel = document.querySelector('#rsvp .section-panel').getBoundingClientRect();
+    const footer = document.querySelector('.footer').getBoundingClientRect();
+    return { overflow: document.documentElement.scrollWidth > window.innerWidth, footerGap: footer.top - panel.bottom };
+  });
+  expect(layout.overflow).toBe(false);
+  expect(layout.footerGap).toBeGreaterThanOrEqual(48);
+}
+
+async function expectGuestCards(page) {
+  for (const card of await page.locator('.invitee-response').all()) {
+    await expect(card).toHaveAccessibleName(await card.locator('legend').textContent());
+    await expect(card.getByRole('group', { name: 'Are you able to attend our wedding?', exact: true })).toBeVisible();
+    const layout = await card.evaluate(element => {
+      const card = element.getBoundingClientRect(), name = element.querySelector('legend').getBoundingClientRect();
+      const question = element.querySelector('.attendance-question').getBoundingClientRect();
+      return {
+        topPadding: name.top - card.top, leftPadding: name.left - card.left,
+        rightPadding: card.right - name.right, nameGap: question.top - name.bottom,
+        touchHeights: [...element.querySelectorAll('.attendance-options label')].map(label => label.getBoundingClientRect().height),
+      };
+    });
+    expect(layout.topPadding).toBeGreaterThanOrEqual(16);
+    expect(layout.leftPadding).toBeGreaterThanOrEqual(16);
+    expect(layout.rightPadding).toBeGreaterThanOrEqual(16);
+    expect(layout.nameGap).toBeGreaterThanOrEqual(12);
+    for (const height of layout.touchHeights) expect(height).toBeGreaterThanOrEqual(48);
+  }
+}
+
+for (const width of [320, 375, 390, 768, 1280]) test(`RSVP presentation through every step at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await install(page);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('RSVP');
+  await expectBalancedLayout(page);
+  await find(page); await expectBalancedLayout(page);
+  await page.getByRole('button', { name: 'Yes, continue' }).click();
+  await expect(page.locator('#rsvp-progress')).toHaveText('Step 2 of 4 · Your guests');
+  await expectGuestCards(page);
+  await expect(page.locator('#guests-title')).toBeFocused();
+  await page.keyboard.press('Tab'); await expect(page.locator('#attendance-10')).toBeFocused();
+  expect(await page.locator('#attendance-10').evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
+  await page.keyboard.press('ArrowRight'); await expect(page.locator('#attendance-10-no')).toBeChecked();
+  await page.keyboard.press('ArrowLeft'); await expect(page.locator('#attendance-10')).toBeChecked();
+  await page.getByLabel('Select your meal preference', { exact: true }).first().selectOption('chicken');
+  await expect(page.getByLabel('Any dietary restrictions or allergies? (optional)', { exact: true }).first()).toBeVisible();
+  await page.locator('#attendance-11-no').check();
+  await expectBalancedLayout(page);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.screenshot({ path: `node_modules/.cache/rsvp-guests-${width}.png`, fullPage: true });
+  await page.locator('#guests-continue').click();
+  await expect(page.getByRole('heading', { name: 'Where can we reach you?' })).toBeFocused();
+  await expect(page.getByRole('group', { name: 'Where should we send mail for your party?' })).toBeVisible();
+  for (const [id, label] of Object.entries({ contactEmail: 'What’s the best email to reach you?', addressLine1: 'Address',
+    addressLine2: 'Apartment, suite or unit (optional)', city: 'City', provinceState: 'Province or state',
+    postalCode: 'Postal or ZIP code', country: 'Country', message: 'Anything else you’d like us to know? (optional)' })) {
+    await expect(page.locator(`#${id}`)).toHaveAccessibleName(label);
+    expect(await page.locator(`#${id}`).evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16);
+  }
+  await expectBalancedLayout(page);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.screenshot({ path: `node_modules/.cache/rsvp-contact-${width}.png`, fullPage: true });
+  await contact(page);
+  await expect(page.getByRole('heading', { name: 'Review your RSVP', exact: true })).toBeFocused();
+  await expectBalancedLayout(page);
+  await page.locator('#rsvp-submit').click();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Thank you for letting us know');
+  await expect(page.locator('#success-title')).toBeFocused();
+  await expect(page.locator('#rsvp-page-title')).toBeHidden();
+  await expect(page.locator('#rsvp-progress')).toBeHidden();
+  await expect(page.locator('[data-step="success"]')).toContainText('Your RSVP has been saved. We’re so grateful you took the time to respond.');
+  await expectBalancedLayout(page);
+  await page.screenshot({ path: `node_modules/.cache/rsvp-success-${width}.png`, fullPage: true });
+});
+
+for (const width of [320, 375, 390, 768, 1280]) test(`long invitation fits ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 900 });
   const family = Array.from({ length: 9 }, (_, i) => ({ id: 100 + i, name: `Synthetic Family Member ${i + 1} With A Long Surname` }));
   await install(page, { lookup: route => route.fulfill({ json: { ...invitation, party: { ...invitation.party, guests: family } } }) });
   await find(page); await page.getByRole("button", { name: "Yes, continue" }).click();
   await expect(page.locator(".invitee-response")).toHaveCount(9);
+  await expectGuestCards(page);
+  await expectBalancedLayout(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   if (width === 1280) await page.screenshot({ path: "node_modules/.cache/rsvp-guests-desktop.png", fullPage: true });
 });

@@ -37,6 +37,7 @@ function focusAt(element) {
 function showStep(next, focus = true) {
   step = next; clearErrors(); status();
   steps.forEach(section => { section.hidden = section.dataset.step !== next; });
+  $("rsvp-page-title").hidden = next === "success";
   const index = ["confirm", "guests", "contact", "review"].indexOf(next);
   $("rsvp-progress").hidden = index < 0;
   $("rsvp-progress").textContent = index < 0 ? "" : `Step ${index + 1} of 4 · ${["Your invitation", "Your guests", "Contact details", "Review"][index]}`;
@@ -232,7 +233,10 @@ function renderParty() {
     $("invitation-names").append(node("li", guest.name));
     const card = node("fieldset", null, "invitee-response"); card.dataset.guestId = guest.id;
     card.append(node("legend", guest.name));
+    const question = node("p", "Are you able to attend our wedding?", "attendance-question");
+    question.id = `attendance-question-${guest.id}`; card.append(question);
     const attendance = node("div", null, "attendance-options");
+    attendance.setAttribute("role", "group"); attendance.setAttribute("aria-labelledby", question.id);
     for (const [value, text] of [["yes", "Yes, gladly"], ["no", "No, with regrets"]]) {
       const label = node("label"), radio = node("input"); radio.type = "radio";
       radio.name = `attendance-${guest.id}`; radio.id = value === "yes" ? radio.name : `${radio.name}-no`;
@@ -246,7 +250,7 @@ function renderParty() {
       const option = node("option", text); option.value = value; dinner.append(option);
     }
     const dietary = node("input"); dietary.id = `dietary-${guest.id}`; dietary.maxLength = 500; dietary.disabled = true;
-    for (const [input, title] of [[dinner, "Dinner"], [dietary, "Dietary restrictions / allergies (optional)"]]) {
+    for (const [input, title] of [[dinner, "Select your meal preference"], [dietary, "Any dietary restrictions or allergies? (optional)"]]) {
       const row = node("div", null, "form-row"), label = node("label", title); label.htmlFor = input.id;
       row.append(label, input); meal.append(row);
     }
@@ -282,7 +286,7 @@ function errorsFor(which) {
   });
   if (which === "contact") contactKeys.forEach(key => {
     const input = $(key), label = input.labels[0].textContent;
-    if (input.required && !input.value.trim()) errors[key] = `Please enter ${label.toLowerCase()}.`;
+    if (input.required && !input.value.trim()) errors[key] = key === "contactEmail" ? "Please enter the best email to reach you." : `Please enter ${label.toLowerCase()}.`;
     else if (input.value.length > input.maxLength) errors[key] = `Please use ${input.maxLength} characters or fewer.`;
     else if (key === "contactEmail" && (!input.validity.valid || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim()))) errors[key] = "Please enter a valid email address.";
   });

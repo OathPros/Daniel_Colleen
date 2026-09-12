@@ -32,7 +32,7 @@
     <section id="rsvp" class="section" aria-label="RSVP">
       <div class="section-panel">
         <div class="section-content centered">
-          <div class="rsvp-intro"><p class="rsvp-eyebrow">Daniel &amp; Colleen · September 11, 2027</p><h1>We hope you’ll join us</h1></div>
+          <div class="rsvp-intro"><p class="rsvp-eyebrow">Daniel &amp; Colleen · September 11, 2027</p><h1 id="rsvp-page-title" class="rsvp-page-title">RSVP</h1></div>
           <noscript><p>Please enable JavaScript to RSVP, or contact Daniel or Colleen for help.</p></noscript>
           <form id="rsvp-form" class="rsvp-form" novalidate>
             <p id="rsvp-progress" class="rsvp-progress" hidden></p>
@@ -53,35 +53,35 @@
               <p>Please respond for everyone on your invitation.</p><p id="answered-count" class="form-help" role="status"></p>
               <div id="invitee-responses" class="invitee-responses"></div>
               <div class="rsvp-actions"><button type="button" class="button button-primary" id="guests-continue">Continue</button><button type="button" class="button button-secondary" data-go="confirm">Back</button></div></section>
-            <section data-step="contact" hidden aria-labelledby="contact-title"><h2 id="contact-title" tabindex="-1">A few ways to keep in touch</h2>
-              <p>Please share one email and mailing address for your invitation, even if you’re unable to attend.</p>
+            <section data-step="contact" hidden aria-labelledby="contact-title"><h2 id="contact-title" tabindex="-1">Where can we reach you?</h2>
+              <p>Please share the best email and mailing address for your party so we can keep in touch, even if you’re unable to attend.</p>
               <div class="form-row form-row-full">
-                <label for="contactEmail">Best email for contacting your party</label>
+                <label for="contactEmail">What’s the best email to reach you?</label>
                 <input id="contactEmail" name="contactEmail" type="email" maxlength="254" autocomplete="email" required />
               </div>
               <fieldset class="mailing-address">
-                <legend>Best address for mailing your party</legend>
+                <legend>Where should we send mail for your party?</legend>
                 <div class="form-grid">
-                  <div class="form-row form-row-full"><label for="addressLine1">Address line 1</label><input id="addressLine1" name="addressLine1" maxlength="200" autocomplete="address-line1" required /></div>
-                  <div class="form-row form-row-full"><label for="addressLine2">Address line 2 / unit <span>(optional)</span></label><input id="addressLine2" name="addressLine2" maxlength="100" autocomplete="address-line2" /></div>
+                  <div class="form-row form-row-full"><label for="addressLine1">Address</label><input id="addressLine1" name="addressLine1" maxlength="200" autocomplete="address-line1" required /></div>
+                  <div class="form-row form-row-full"><label for="addressLine2">Apartment, suite or unit <span>(optional)</span></label><input id="addressLine2" name="addressLine2" maxlength="100" autocomplete="address-line2" /></div>
                   <div class="form-row"><label for="city">City</label><input id="city" name="city" maxlength="100" autocomplete="address-level2" required /></div>
-                  <div class="form-row"><label for="provinceState">Province/state</label><input id="provinceState" name="provinceState" maxlength="100" autocomplete="address-level1" required /></div>
-                  <div class="form-row"><label for="postalCode">Postal/ZIP code</label><input id="postalCode" name="postalCode" maxlength="32" autocomplete="postal-code" required /></div>
+                  <div class="form-row"><label for="provinceState">Province or state</label><input id="provinceState" name="provinceState" maxlength="100" autocomplete="address-level1" required /></div>
+                  <div class="form-row"><label for="postalCode">Postal or ZIP code</label><input id="postalCode" name="postalCode" maxlength="32" autocomplete="postal-code" required /></div>
                   <div class="form-row"><label for="country">Country</label><input id="country" name="country" maxlength="100" autocomplete="country-name" required /></div>
                 </div>
               </fieldset>
               <div class="form-row form-row-full">
-                <label for="message">A note for Daniel &amp; Colleen <span>(optional)</span></label>
+                <label for="message">Anything else you’d like us to know? <span>(optional)</span></label>
                 <textarea id="message" name="message" rows="4" maxlength="2000" placeholder="Accessibility needs, song requests, or a note for Daniel and Colleen"></textarea>
               </div>
               <div class="rsvp-actions"><button type="button" class="button button-primary" id="contact-continue">Review your RSVP</button><button type="button" class="button button-secondary" data-go="guests">Back</button></div></section>
-            <section data-step="review" hidden aria-labelledby="review-title"><h2 id="review-title" tabindex="-1">Everything look right?</h2>
+            <section data-step="review" hidden aria-labelledby="review-title"><h2 id="review-title" tabindex="-1">Review your RSVP</h2>
               <p>Take a moment to check your response before sending it to us.</p>
               <div class="rsvp-review-heading"><h3>Your guests</h3><button type="button" class="button button-secondary" data-go="guests">Edit guest responses</button></div><div id="review-guests"></div>
               <div class="rsvp-review-heading"><h3>Contact details</h3><button type="button" class="button button-secondary" data-go="contact">Edit contact details</button></div><div id="review-contact"></div>
               <p class="rsvp-final-note">Once submitted, changes need to be made through Daniel or Colleen.</p><div id="submit-security"></div>
               <div class="rsvp-actions"><button id="rsvp-submit" type="submit" class="button button-primary">Send our RSVP</button><button type="button" class="button button-secondary" data-go="contact">Back</button></div></section>
-            <section data-step="success" hidden aria-labelledby="success-title"><h2 id="success-title" tabindex="-1">Thank you for letting us know</h2>
+            <section data-step="success" hidden aria-labelledby="success-title"><h1 id="success-title" class="rsvp-page-title" tabindex="-1">Thank you for letting us know</h1>
               <p>Your RSVP has been saved. We’re so grateful you took the time to respond.</p><p>To make a change, please contact Daniel or Colleen.</p></section>
             <section data-step="closed" hidden aria-labelledby="closed-title"><h2 id="closed-title" tabindex="-1">Your invitation has a response</h2>
               <p>This party has already RSVPed. To make a change, please contact Daniel or Colleen.</p></section>
