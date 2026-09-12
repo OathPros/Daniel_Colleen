@@ -1,6 +1,8 @@
 # Daniel & Colleen Wedding Website
 
-Static multi-page wedding website prepared for GitHub Pages.
+Static multi-page wedding website hosted on GitHub Pages, with a Cloudflare Worker and D1-backed private RSVP API.
+
+See **[RSVP deployment and operations](docs/rsvp-deployment.md)** for architecture, setup, import, deployment, backup, and data-access instructions.
 
 ## File structure
 
@@ -40,6 +42,6 @@ https://YOUR-GITHUB-USERNAME.github.io/daniel-colleen-wedding/
 
 ## Notes
 
-- This is a static site. GitHub Pages does not process RSVP submissions by itself.
-- For RSVP, link to or embed a third-party form such as Microsoft Forms, Google Forms, Tally, or another RSVP service.
+- GitHub Pages remains the site origin. Cloudflare intercepts only `/api/rsvp/*`; every other request continues to Pages.
+- Never add the private guest CSV to this repository. Files under `private/` and `*.private.csv` are ignored.
 - The large slideshow imagery is currently preserved in `assets/css/styles.css` as embedded data URLs from the original single-file mockup. For a cleaner production repo, replace those with image files in `assets/images/` and update the CSS paths.

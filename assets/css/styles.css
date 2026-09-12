@@ -2864,3 +2864,13 @@ body:has(.intro-card) .gallery-feature-section {
 #faq details {
   border-radius: 18px;
 }
+
+/* Private RSVP lookup and party response fields */
+#rsvp .guest-lookup-controls > label { font-weight: 700; }
+#rsvp .guest-lookup input { width: 100%; min-height: 48px; padding: .7rem .85rem; border: 1px solid rgba(70,45,38,.35); border-radius: 2px; font: inherit; background: #fff; }
+.turnstile-wrap { margin: 1.25rem 0; }
+.form-help { margin: .35rem 0 0; font-size: .85rem; opacity: .75; }
+.mailing-address { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid rgba(70,45,38,.2); }
+.mailing-address legend { padding: 0 .4rem; font-family: var(--font-display, Georgia, serif); font-size: 1.2rem; }
+.form-row label span { text-transform: none; font-weight: 400; }
+.guest-dinner select:disabled { opacity: .55; }

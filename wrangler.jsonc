@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "daniel-colleen-rsvp",
+  "main": "worker/src/index.js",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true, "logs": { "enabled": true, "head_sampling_rate": 0.1 } },
+  "env": {
+    "preview": {
+      "name": "daniel-colleen-rsvp-preview",
+      "workers_dev": true,
+      "preview_urls": true,
+      "unsafe": { "bindings": [
+        { "name": "LOOKUP_RATE_LIMITER", "type": "ratelimit", "namespace_id": "2001", "simple": { "limit": 10, "period": 60 } },
+        { "name": "SUBMIT_RATE_LIMITER", "type": "ratelimit", "namespace_id": "2002", "simple": { "limit": 5, "period": 60 } }
+      ] },
+      "d1_databases": [{
+        "binding": "DB",
+        "database_name": "daniel-colleen-rsvp-preview",
+        "database_id": "47453bf0-07ed-45ab-86b3-c973ba494e62",
+        "migrations_dir": "migrations"
+      }]
+    },
+    "production": {
+      "name": "daniel-colleen-rsvp-prod",
+      "routes": [{ "pattern": "www.daniel-and-colleen.com/api/rsvp/*", "zone_name": "daniel-and-colleen.com" }],
+      "unsafe": { "bindings": [
+        { "name": "LOOKUP_RATE_LIMITER", "type": "ratelimit", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+        { "name": "SUBMIT_RATE_LIMITER", "type": "ratelimit", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } }
+      ] },
+      "d1_databases": [{
+        "binding": "DB",
+        "database_name": "daniel-colleen-rsvp-prod",
+        "database_id": "c66b58f1-2b18-4db8-a916-7c205bf735de",
+        "migrations_dir": "migrations"
+      }]
+    }
+  }
+}
