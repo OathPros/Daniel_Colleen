@@ -47,6 +47,78 @@ document.documentElement.classList.add("js");
   });
 })();
 
+(function () {
+  const hero = document.querySelector("[data-hero]");
+  if (!hero) return;
+
+  const images = window.WEDDING_IMAGE_MANIFEST?.collections?.["home/hero"];
+  if (!Array.isArray(images) || images.length === 0) {
+    // Temporary migration compatibility: keep the embedded legacy slideshow until
+    // managed photography is placed in assets/images/home/hero.
+    console.info("[images] No managed home/hero images; using the temporary legacy slideshow.");
+    return;
+  }
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const firstLoader = new Image();
+  firstLoader.fetchPriority = "high";
+  firstLoader.src = images[0].src;
+
+  function activateManagedHero() {
+    const tint = hero.querySelector(".hero-tint");
+    hero.replaceChildren();
+    hero.dataset.heroMode = "managed";
+
+    const slides = images.map((entry, index) => {
+      const slide = document.createElement("div");
+      slide.className = `slide managed-slide${index === 0 ? " is-active" : ""}`;
+      slide.style.setProperty("--hero-position", entry.position || "center");
+      slide.setAttribute("aria-hidden", "true");
+      if (index === 0) slide.style.backgroundImage = `url("${entry.src}")`;
+      hero.append(slide);
+      return slide;
+    });
+    if (tint) hero.append(tint);
+
+    if (images.length === 1 || reducedMotion) return;
+
+    const progress = document.createElement("div");
+    progress.className = "photo-progress";
+    progress.setAttribute("aria-hidden", "true");
+    const indicators = images.map(() => progress.appendChild(document.createElement("span")));
+    indicators[0].classList.add("is-active");
+    hero.append(progress);
+
+    let current = 0;
+    const load = (index) => {
+      const slide = slides[index];
+      if (slide.dataset.loaded) return;
+      const loader = new Image();
+      loader.decoding = "async";
+      loader.onload = () => {
+        slide.style.backgroundImage = `url("${images[index].src}")`;
+        slide.dataset.loaded = "true";
+      };
+      loader.src = images[index].src;
+    };
+    slides[0].dataset.loaded = "true";
+    load(1);
+    window.setInterval(() => {
+      const next = (current + 1) % slides.length;
+      load(next);
+      slides[current].classList.remove("is-active");
+      indicators[current].classList.remove("is-active");
+      slides[next].classList.add("is-active");
+      indicators[next].classList.add("is-active");
+      current = next;
+      load((current + 1) % slides.length);
+    }, 9000);
+  }
+
+  if (firstLoader.complete) activateManagedHero();
+  else firstLoader.addEventListener("load", activateManagedHero, { once: true });
+})();
+
 
 (function () {
   const gallery = document.querySelector("[data-gallery]");
