@@ -3,11 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test",
-    "check": "node --check worker/src/index.js && node --check assets/js/main.js && node --check scripts/import-guests.mjs",
+    "test": "node --test test/*.test.js",
+    "test:browser": "playwright test",
+    "preview": "node scripts/preview-server.mjs",
+    "check": "node --check worker/src/index.js && node --check worker/src/normalize.js && node --check assets/js/main.js && node --check assets/js/rsvp.js && node --check assets/js/rsvp-search.js && node --check scripts/preview-server.mjs && node --check scripts/import-guests.mjs",
     "import": "node scripts/import-guests.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "miniflare": "5.20260911.0-alpha",
     "wrangler": "^4.35.0"
   }
 }

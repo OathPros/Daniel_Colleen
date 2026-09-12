@@ -1,140 +1,151 @@
-import { normalizeName } from "./normalize.js";
+import { normalizeName, meaningfulQuery, suggestNames } from "./normalize.js";
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
 const LIMITS = { name: 120, publicId: 100, email: 254, line1: 200, line2: 100, city: 100, region: 100, postal: 32, country: 100, dietary: 500, message: 2000, honeypot: 200 };
-
-const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: JSON_HEADERS });
-const clean = (value) => typeof value === "string" ? value.trim() : "";
-const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-const field = (body, key, max, required = false) => {
-  if (body[key] != null && typeof body[key] !== "string") throw new ApiError("Invalid RSVP details.");
+const CLOSED_MESSAGE = "This party has already RSVPed. To make a change, please contact Daniel or Colleen.";
+const reply = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), { status, headers: { ...JSON_HEADERS, ...headers } });
+const clean = value => typeof value === "string" ? value.trim() : "";
+export class ApiError extends Error {
+  constructor(message, status = 400, code = "invalid_request", fields = {}) {
+    super(message); this.status = status; this.code = code; this.fields = fields;
+  }
+}
+const alreadySubmitted = () => new ApiError(CLOSED_MESSAGE, 409, "already_submitted");
+const invalidField = (key, message) => new ApiError(message, 400, "validation_error", { [key]: message });
+function field(body, key, max, required = false) {
+  if (body[key] != null && typeof body[key] !== "string") throw invalidField(key, "Please enter text in this field.");
   const value = clean(body[key]);
-  if ((required && !value) || value.length > max) throw new ApiError("Please check the required fields and try again.");
+  if (required && !value) throw invalidField(key, "Please complete this field.");
+  if (value.length > max) throw invalidField(key, `Please use ${max} characters or fewer.`);
   return value;
-};
-
-class ApiError extends Error { constructor(message, status = 400) { super(message); this.status = status; } }
+}
 
 export class D1Repository {
   constructor(db) { this.db = db; }
+  async suggest(query) {
+    const rows = await this.db.prepare("SELECT full_name FROM guests").all();
+    return suggestNames(rows.results.map(row => row.full_name), query);
+  }
   async lookup(normalized) {
     const matches = await this.db.prepare("SELECT party_id FROM guests WHERE normalized_name=? LIMIT 2").bind(normalized).all();
     if (matches.results.length !== 1) return null;
-    const rows = await this.db.prepare(`SELECT p.id party_id, p.public_id, p.party_name, g.id guest_id, g.full_name,
-      pr.contact_email, pr.mailing_address_line1, pr.mailing_address_line2, pr.mailing_city,
-      pr.mailing_province_state, pr.mailing_postal_code, pr.mailing_country, pr.message,
-      gr.attending, gr.dinner_choice, gr.dietary_restrictions
-      FROM parties p JOIN guests g ON g.party_id=p.id
-      LEFT JOIN party_rsvps pr ON pr.party_id=p.id LEFT JOIN guest_rsvps gr ON gr.guest_id=g.id
-      WHERE p.id=? ORDER BY g.display_order`).bind(matches.results[0].party_id).all();
-    return mapParty(rows.results);
+    return this.readParty("p.id", matches.results[0].party_id);
   }
-  async byPublicId(publicId) {
-    const result = await this.db.prepare(`SELECT p.id party_id, p.public_id, p.party_name, g.id guest_id, g.full_name
-      FROM parties p JOIN guests g ON g.party_id=p.id WHERE p.public_id=? ORDER BY g.display_order`).bind(publicId).all();
-    return result.results.length ? mapParty(result.results) : null;
+  async byPublicId(publicId) { return this.readParty("p.public_id", publicId); }
+  async readParty(column, value) {
+    // column is an internal constant. No saved response fields are selected.
+    const result = await this.db.prepare(`SELECT p.id party_id, p.public_id, g.id guest_id, g.full_name,
+      EXISTS(SELECT 1 FROM party_rsvps pr WHERE pr.party_id=p.id) submitted
+      FROM parties p JOIN guests g ON g.party_id=p.id WHERE ${column}=? ORDER BY g.display_order`).bind(value).all();
+    if (!result.results.length) return null;
+    const first = result.results[0];
+    return { id: first.party_id, publicId: first.public_id, submitted: Boolean(first.submitted),
+      guests: result.results.map(row => ({ id: row.guest_id, name: row.full_name })) };
   }
   async save(party, data, now) {
+    // The unique party_id INSERT is first. A failed D1 batch rolls back every
+    // statement, so a competing submission cannot overwrite any guest response.
     const statements = [this.db.prepare(`INSERT INTO party_rsvps
       (party_id,contact_email,mailing_address_line1,mailing_address_line2,mailing_city,mailing_province_state,mailing_postal_code,mailing_country,message,submitted_at,updated_at)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(party_id) DO UPDATE SET contact_email=excluded.contact_email,
-      mailing_address_line1=excluded.mailing_address_line1, mailing_address_line2=excluded.mailing_address_line2,
-      mailing_city=excluded.mailing_city, mailing_province_state=excluded.mailing_province_state,
-      mailing_postal_code=excluded.mailing_postal_code, mailing_country=excluded.mailing_country,
-      message=excluded.message, updated_at=excluded.updated_at`).bind(party.id, data.email, data.line1, data.line2 || null,
-        data.city, data.region, data.postal, data.country, data.message || null, now, now)];
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)`).bind(party.id, data.email, data.line1, data.line2 || null,
+      data.city, data.region, data.postal, data.country, data.message || null, now, now)];
     for (const guest of data.guests) statements.push(this.db.prepare(`INSERT INTO guest_rsvps
-      (guest_id,attending,dinner_choice,dietary_restrictions,updated_at) VALUES (?,?,?,?,?)
-      ON CONFLICT(guest_id) DO UPDATE SET attending=excluded.attending,dinner_choice=excluded.dinner_choice,
-      dietary_restrictions=excluded.dietary_restrictions,updated_at=excluded.updated_at`)
+      (guest_id,attending,dinner_choice,dietary_restrictions,updated_at) VALUES (?,?,?,?,?)`)
       .bind(guest.id, guest.attending, guest.dinner, guest.dietary || null, now));
-    await this.db.batch(statements);
+    try { await this.db.batch(statements); }
+    catch (error) {
+      // D1 wraps constraint errors. Check the post-failure state rather than
+      // depending on error text. Unrelated failures with no saved party stay 500.
+      const existing = await this.db.prepare("SELECT party_id FROM party_rsvps WHERE party_id=?").bind(party.id).first();
+      if (existing) throw alreadySubmitted();
+      throw error;
+    }
   }
-}
-
-function mapParty(rows) {
-  const first = rows[0];
-  return { id: first.party_id, publicId: first.public_id, name: first.party_name,
-    guests: rows.map((r) => ({ id: r.guest_id, name: r.full_name, attending: r.attending ?? null,
-      dinnerChoice: r.dinner_choice ?? null, dietaryRestrictions: r.dietary_restrictions ?? "" })),
-    rsvp: first.contact_email == null ? null : { contactEmail: first.contact_email, addressLine1: first.mailing_address_line1,
-      addressLine2: first.mailing_address_line2 ?? "", city: first.mailing_city, provinceState: first.mailing_province_state,
-      postalCode: first.mailing_postal_code, country: first.mailing_country, message: first.message ?? "" } };
 }
 
 async function verifyTurnstile(token, request, env) {
-  if (!token || typeof token !== "string") return false;
+  if (!token || typeof token !== "string" || token.length > 2048) return false;
   const form = new FormData();
   form.set("secret", env.TURNSTILE_SECRET_KEY || ""); form.set("response", token);
   const ip = request.headers.get("CF-Connecting-IP"); if (ip) form.set("remoteip", ip);
   const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
   return response.ok && Boolean((await response.json()).success);
 }
-
 async function limited(binding, key) {
   if (!binding) return false;
-  const result = await binding.limit({ key });
-  return !result.success;
+  return !(await binding.limit({ key })).success;
 }
-
 async function jsonBody(request) {
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) throw new ApiError("Invalid request.");
-  try { const body = await request.json(); if (!body || Array.isArray(body) || typeof body !== "object") throw new Error(); return body; }
-  catch { throw new ApiError("Invalid request."); }
+  try {
+    const body = await request.json();
+    if (!body || Array.isArray(body) || typeof body !== "object") throw new Error();
+    return body;
+  } catch { throw new ApiError("Invalid request."); }
 }
-
 export function createHandler(overrides = {}) {
   return async (request, env) => {
     try {
-      const url = new URL(request.url);
-      if (request.method !== "POST" || !["/api/rsvp/lookup", "/api/rsvp/submit"].includes(url.pathname)) return reply({ message: "Not found." }, 404);
+      const path = new URL(request.url).pathname;
+      if (request.method !== "POST" || !["/api/rsvp/suggest", "/api/rsvp/lookup", "/api/rsvp/submit"].includes(path)) return reply({ message: "Not found." }, 404);
+      const isSuggest = path.endsWith("/suggest"), isLookup = path.endsWith("/lookup"), isSearch = isSuggest || isLookup;
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-      const isLookup = url.pathname.endsWith("/lookup");
-      if (await (overrides.limited || limited)(isLookup ? env.LOOKUP_RATE_LIMITER : env.SUBMIT_RATE_LIMITER, `${isLookup ? "l" : "s"}:${ip}`)) return reply({ message: "Please wait before trying again." }, 429);
+      if (await (overrides.limited || limited)(isSearch ? env.LOOKUP_RATE_LIMITER : env.SUBMIT_RATE_LIMITER, `${isSearch ? "l" : "s"}:${ip}`)) {
+        return reply({ code: "rate_limited", message: "Please wait a minute before trying again." }, 429, { "retry-after": "60" });
+      }
       const body = await jsonBody(request);
       if (field(body, "website", LIMITS.honeypot)) throw new ApiError("Unable to process this request.");
-      const verify = overrides.verifyTurnstile || verifyTurnstile;
-      if (!await verify(body.turnstileToken, request, env)) throw new ApiError("Please complete the security check.");
       const repo = overrides.repository || new D1Repository(env.DB);
+      if (isSuggest) {
+        const query = field(body, "name", LIMITS.name, true);
+        if (!meaningfulQuery(query)) return reply({ names: [], hasMore: false });
+        const result = await repo.suggest(query);
+        return reply({ names: result.names.slice(0, 8), hasMore: Boolean(result.hasMore) });
+      }
+      if (!await (overrides.verifyTurnstile || verifyTurnstile)(body.turnstileToken, request, env)) {
+        throw new ApiError("We couldn't complete the security check. Please try again.", 400, "verification_failed");
+      }
       if (isLookup) {
         const normalized = normalizeName(field(body, "name", LIMITS.name, true));
-        if (!normalized) throw new ApiError("We could not find that invitation. Please check the name and try again.", 404);
-        const party = await repo.lookup(normalized);
-        if (!party) throw new ApiError("We could not find that invitation. Please check the name and try again.", 404);
-        return reply({ party: { publicId: party.publicId, partyName: party.name, guests: party.guests, rsvp: party.rsvp } });
+        const party = normalized ? await repo.lookup(normalized) : null;
+        if (!party) throw new ApiError("We couldn't open that invitation. Please try the name on your invitation, or contact Daniel or Colleen.", 404, "invitation_unavailable");
+        if (party.submitted) return reply({ state: "already_submitted" });
+        return reply({ state: "unanswered", party: { publicId: party.publicId,
+          guests: party.guests.map(guest => ({ id: guest.id, name: guest.name })) } });
       }
-      const publicId = field(body, "partyId", LIMITS.publicId, true);
-      const party = await repo.byPublicId(publicId);
-      if (!party) throw new ApiError("Unable to update that invitation.", 404);
+      const party = await repo.byPublicId(field(body, "partyId", LIMITS.publicId, true));
+      if (!party) throw new ApiError("Unable to open that invitation.", 404, "invitation_unavailable");
+      if (party.submitted) throw alreadySubmitted();
       if (!Array.isArray(body.guests)) throw new ApiError("Please answer for every guest.");
-      const expected = new Set(party.guests.map((g) => g.id));
-      const seen = new Set();
-      const guests = body.guests.map((guest) => {
+      const expected = new Set(party.guests.map(guest => guest.id)), seen = new Set();
+      const guests = body.guests.map(guest => {
         if (!guest || typeof guest !== "object" || !Number.isInteger(guest.id) || !expected.has(guest.id) || seen.has(guest.id)) throw new ApiError("Invalid guest response.");
         seen.add(guest.id);
-        if (!['yes', 'no'].includes(guest.attending)) throw new ApiError("Please select attendance for every guest.");
-        const dinner = guest.dinnerChoice == null ? null : clean(guest.dinnerChoice);
-        if (guest.attending === "yes" && !['beef', 'chicken', 'vegetarian'].includes(dinner)) throw new ApiError("Please select dinner for each attending guest.");
-        if (guest.attending === "no" && dinner !== null && dinner !== "") throw new ApiError("Declining guests cannot have a dinner choice.");
-        if (guest.dietaryRestrictions != null && typeof guest.dietaryRestrictions !== "string") throw new ApiError("Invalid dietary information.");
-        const dietary = clean(guest.dietaryRestrictions); if (dietary.length > LIMITS.dietary) throw new ApiError("Dietary information is too long.");
-        return { id: guest.id, attending: guest.attending, dinner: guest.attending === "no" ? null : dinner, dietary };
+        if (!["yes", "no"].includes(guest.attending)) throw invalidField(`attendance-${guest.id}`, "Please choose Yes or No.");
+        if (guest.dinnerChoice != null && typeof guest.dinnerChoice !== "string") throw invalidField(`dinner-${guest.id}`, "Please choose a dinner option.");
+        const dinner = clean(guest.dinnerChoice);
+        if (guest.attending === "yes" && !["beef", "chicken", "vegetarian"].includes(dinner)) throw invalidField(`dinner-${guest.id}`, "Please choose a dinner option.");
+        if (guest.attending === "no" && dinner) throw invalidField(`dinner-${guest.id}`, "A declining guest cannot have a dinner selection.");
+        if (guest.dietaryRestrictions != null && typeof guest.dietaryRestrictions !== "string") throw invalidField(`dietary-${guest.id}`, "Please enter text in this field.");
+        const dietary = clean(guest.dietaryRestrictions);
+        if (dietary.length > LIMITS.dietary) throw invalidField(`dietary-${guest.id}`, "Please use 500 characters or fewer.");
+        return { id: guest.id, attending: guest.attending, dinner: guest.attending === "yes" ? dinner : null,
+          dietary: guest.attending === "yes" ? dietary : "" };
       });
       if (seen.size !== expected.size) throw new ApiError("Please answer for every guest.");
       const data = { guests, email: field(body, "contactEmail", LIMITS.email, true), line1: field(body, "addressLine1", LIMITS.line1, true),
         line2: field(body, "addressLine2", LIMITS.line2), city: field(body, "city", LIMITS.city, true),
         region: field(body, "provinceState", LIMITS.region, true), postal: field(body, "postalCode", LIMITS.postal, true),
         country: field(body, "country", LIMITS.country, true), message: field(body, "message", LIMITS.message) };
-      if (!validEmail(data.email)) throw new ApiError("Please enter a valid email address.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) throw invalidField("contactEmail", "Please enter a valid email address.");
       await repo.save(party, data, new Date().toISOString());
-      return reply({ message: "Your RSVP has been saved." });
+      return reply({ state: "submitted", message: "Your RSVP has been saved." });
     } catch (error) {
-      if (error instanceof ApiError) return reply({ message: error.message }, error.status);
+      if (error instanceof ApiError) return reply({ code: error.code, ...(error.code === "already_submitted" ? { state: error.code } : {}),
+        message: error.message, ...(Object.keys(error.fields).length ? { fields: error.fields } : {}) }, error.status);
       console.error("RSVP request failed", { error: error?.name || "Error" });
-      return reply({ message: "We could not process your RSVP. Please try again." }, 500);
+      return reply({ code: "unavailable", message: "We couldn't save your RSVP. Please try again." }, 500);
     }
   };
 }
-
-const handler = createHandler();
-export default { fetch: handler };
+export default { fetch: createHandler() };

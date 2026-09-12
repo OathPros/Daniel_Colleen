@@ -1,3 +1,5 @@
+export { meaningfulQuery, suggestNames } from "../../assets/js/rsvp-search.js";
+
 export function normalizeName(value) {
   return String(value ?? "")
     .normalize("NFKD")

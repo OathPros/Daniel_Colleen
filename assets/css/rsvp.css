@@ -1,0 +1,56 @@
+/* RSVP-only overrides preserve the shared site's wedding palette and typography. */
+#rsvp [hidden] { display: none !important; }
+#rsvp .section-panel { padding: clamp(1rem, 4vw, 3rem); border-radius: 30px; }
+#rsvp .rsvp-intro { max-width: 700px; margin-inline: auto; text-align: center; }
+#rsvp .rsvp-intro h1 { font-family: var(--serif); font-size: clamp(2.2rem, 7vw, 3.5rem); line-height: 1.12; font-weight: 400; }
+#rsvp .rsvp-eyebrow, #rsvp .rsvp-progress { font-family: var(--sans); color: var(--muted); font-size: .85rem; letter-spacing: .035em; }
+#rsvp .rsvp-form { max-width: 680px; margin: 2rem auto 0; }
+#rsvp [data-step] > h2 { font-family: var(--serif); font-size: clamp(1.9rem, 5vw, 2.65rem); line-height: 1.15; font-weight: 400; margin: 0 0 .75rem; }
+#rsvp [data-step] > p { margin: .5rem 0 1.5rem; }
+#rsvp p, #rsvp li, #rsvp legend, #rsvp h4 { overflow-wrap: anywhere; }
+#rsvp fieldset { min-width: 0; }
+#rsvp .form-row label { font-family: var(--sans); font-size: 1rem; letter-spacing: 0; text-transform: none; font-weight: 500; }
+#rsvp .form-row input, #rsvp .form-row select, #rsvp .form-row textarea { min-width: 0; min-height: 48px; font-family: var(--sans); font-size: 16px; line-height: 1.5; border-radius: 12px; background: var(--warm-paper); }
+#rsvp .form-row label span { color: var(--muted); }
+#rsvp .form-help { font-family: var(--sans); font-size: .9rem; opacity: 1; color: var(--muted); }
+#rsvp .rsvp-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
+#rsvp .button { min-height: 48px; white-space: normal; font-size: 1rem; letter-spacing: 0; text-transform: none; max-width: 100%; }
+#rsvp button:disabled { opacity: .6; cursor: wait; transform: none; }
+#rsvp :focus-visible { outline: 3px solid var(--cranberry); outline-offset: 4px; }
+#rsvp .rsvp-search { position: relative; }
+#guest-suggestions { list-style: none; margin: 0; padding: .35rem; border: 1px solid var(--soft-rule); border-radius: 14px; background: var(--warm-paper); box-shadow: var(--soft-shadow); max-height: 24rem; overflow-y: auto; }
+#guest-suggestions [role="option"] { padding: .8rem 1rem; min-height: 48px; border-radius: 8px; cursor: pointer; font-family: var(--sans); font-size: 1rem; }
+#guest-suggestions [role="option"]:hover, #guest-suggestions [aria-selected="true"] { background: var(--linen); color: var(--cranberry-deep); outline: 1px solid var(--cranberry); outline-offset: -1px; }
+#rsvp .invitation-names { list-style: none; padding: 0; margin: 1.5rem 0; font-size: 1.45rem; }
+#rsvp .invitation-names li { padding: .6rem 0; border-bottom: 1px solid var(--soft-rule); }
+#rsvp .invitee-response { padding: 1.1rem; border-radius: 18px; }
+#rsvp .invitee-response legend { font-family: var(--serif); font-size: 1.6rem; }
+#rsvp .attendance-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+#rsvp .attendance-options label { border-radius: 12px; min-height: 52px; cursor: pointer; font: 1rem/1.35 var(--sans); }
+#rsvp .attendance-options label:has(input:checked) { background: var(--linen); border-color: var(--cranberry); box-shadow: inset 0 0 0 1px var(--cranberry); }
+#rsvp .attendance-options input { flex: 0 0 auto; width: 18px; height: 18px; }
+#rsvp .mailing-address { border-radius: 16px; padding: 1rem; }
+#rsvp .mailing-address legend { font: 1.4rem var(--serif); }
+#rsvp .rsvp-review-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; margin-top: 1.5rem; }
+#rsvp .rsvp-review-heading h3 { font-size: 1.5rem; margin: 0; }
+#rsvp .rsvp-review-heading .button { padding: .5rem .75rem; font-size: .9rem; }
+#rsvp .rsvp-review-card { border-bottom: 1px solid var(--soft-rule); padding: 1rem 0; }
+#rsvp .rsvp-review-card h4 { font: 1.35rem var(--serif); margin: 0 0 .3rem; }
+#rsvp .rsvp-review-card p { margin: .25rem 0; }
+#rsvp .rsvp-address, #review-contact p, #review-guests p { white-space: pre-line; }
+#rsvp .rsvp-final-note { border-top: 1px solid var(--gold-rule); padding-top: 1.25rem; margin-top: 1.75rem; font-style: italic; }
+#rsvp .rsvp-errors { border: 1px solid var(--cranberry); border-radius: 12px; background: var(--warm-paper); padding: 1rem; margin-bottom: 1.5rem; }
+#rsvp .rsvp-errors h3 { font: 1.2rem var(--sans); margin: 0; }
+#rsvp .rsvp-errors ul { margin-bottom: 0; padding-left: 1.25rem; }
+#rsvp .rsvp-errors a { display: inline-block; padding-block: .5rem; text-decoration: underline; }
+#rsvp .field-error { color: var(--cranberry-deep); font: .95rem/1.5 var(--sans); margin: .4rem 0 .75rem; }
+#rsvp [aria-invalid="true"] { border-color: var(--cranberry); }
+#rsvp .rsvp-status { text-align: left; font-family: var(--sans); font-size: .95rem; }
+#rsvp .turnstile-wrap { max-width: 100%; }
+@media (max-width: 480px) {
+  #rsvp { padding-inline: .65rem; }
+  #rsvp .rsvp-actions { flex-direction: column; }
+  #rsvp .rsvp-actions .button { width: 100%; }
+  #rsvp .attendance-options { grid-template-columns: 1fr; }
+  #rsvp .form-grid { grid-template-columns: 1fr; }
+}
