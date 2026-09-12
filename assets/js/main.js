@@ -3,6 +3,15 @@
 
 document.documentElement.classList.add("js");
 
+// Keep old bookmarks working without leaving the implementation's .html suffix
+// visible in the address bar. Internal navigation already uses clean URLs.
+if (window.location.pathname.endsWith(".html")) {
+  const cleanPath = window.location.pathname === "/index.html"
+    ? "/"
+    : window.location.pathname.slice(0, -5);
+  window.history.replaceState(null, "", `${cleanPath}${window.location.search}${window.location.hash}`);
+}
+
 (function () {
   const menuButton = document.querySelector(".menu-toggle");
   const navigation = document.getElementById("main-navigation");
@@ -38,7 +47,7 @@ document.documentElement.classList.add("js");
 })();
 
 (function () {
-  const current = window.location.pathname.split('/').pop() || 'index.html';
+  const current = window.location.pathname.split('/').pop() || '';
   document.querySelectorAll('.nav a').forEach((link) => {
     const href = link.getAttribute('href');
     if (href === current) {

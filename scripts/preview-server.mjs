@@ -6,7 +6,7 @@ import { resolve, sep } from "node:path";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const publicFiles = new Set([
   "index.html", "rsvp.html", "venue.html", "travel.html", "story.html", "schedule.html", "registry.html", "faq.html",
-  "Arwen.png", "Eowyn.png", "Merry.png", "Pippin.png",
+  "Arwen.png", "Eowyn.png", "Merry.png", "Pippin.png", "assets/favicon.png",
   "assets/css/styles.css", "assets/css/rsvp.css", "assets/css/portraits.css", "assets/data/images.generated.js",
   "assets/js/main.js", "assets/js/rsvp.js", "assets/js/rsvp-search.js"
 ]);
@@ -60,7 +60,10 @@ export function createPreviewServer({ upstream, fetchImpl = fetch } = {}) {
           result.status === 429 ? { "retry-after": "60" } : {});
       }
       if (!["GET", "HEAD"].includes(request.method)) return send(405, '{"message":"GET required."}');
-      const file = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
+      const requestedFile = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
+      const file = !requestedFile.includes(".") && publicFiles.has(`${requestedFile}.html`)
+        ? `${requestedFile}.html`
+        : requestedFile;
       // Exact allowlist: no directory listing, private CSV, env files, worker
       // configuration, databases, source maps, or arbitrary repository paths.
       const managedImage = /^assets\/images\/(?:[^/.][^/]*\/)*[^/.][^/]*\.(?:webp|jpe?g|png|avif)$/i.test(file);
@@ -86,7 +89,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     const server = createPreviewServer({ upstream });
     server.on("error", () => { console.error("Could not start the local preview server. Check whether the port is in use."); process.exitCode = 1; });
     server.listen(port, "127.0.0.1", () => {
-      console.log(`Local site: http://localhost:${port}/rsvp.html`);
+      console.log(`Local site: http://localhost:${port}/rsvp`);
       console.log(upstream ? `RSVP API: ${upstream} (preview only; redirects blocked)` : "RSVP API disabled (static-only test mode).");
     });
   } catch (error) { console.error(error.message); process.exitCode = 1; }

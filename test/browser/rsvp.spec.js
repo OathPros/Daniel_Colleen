@@ -32,7 +32,7 @@ async function install(page, overrides = {}) {
     const json = path === "suggest" ? suggestNames(allNames, body.name) : path === "lookup" ? invitation : { state: "submitted" };
     return route.fulfill({ json });
   });
-  await page.goto("/rsvp.html");
+  await page.goto("/rsvp");
   return calls;
 }
 async function find(page) {

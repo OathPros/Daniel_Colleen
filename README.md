@@ -6,6 +6,12 @@ See **[RSVP deployment and operations](docs/rsvp-deployment.md)** for architectu
 
 See **[Image management](docs/image-management.md)** for adding, replacing, ordering, and cropping managed photography, and **[the migration inventory](docs/image-migration.md)** for the staged move away from legacy embedded images.
 
+## Favicon
+
+Place the finished square PNG at `assets/favicon.png`. Every page already references
+that file, so replacing it and publishing the site is all that is required. A 512 ×
+512 source image is recommended; browsers will scale it for their tabs.
+
 ## File structure
 
 ```text
