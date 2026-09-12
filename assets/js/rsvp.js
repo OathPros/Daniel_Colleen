@@ -37,6 +37,7 @@ function focusAt(element) {
 function showStep(next, focus = true) {
   step = next; clearErrors(); status();
   steps.forEach(section => { section.hidden = section.dataset.step !== next; });
+  $("rsvp-workflow-header").hidden = next === "success";
   $("rsvp").classList.toggle("rsvp-success", next === "success");
   const index = ["confirm", "guests", "contact", "review"].indexOf(next);
   $("rsvp-progress").hidden = index < 0;

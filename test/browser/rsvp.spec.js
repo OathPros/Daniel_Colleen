@@ -46,9 +46,9 @@ async function answer(page) {
   await page.locator("#dietary-10").fill("Synthetic allergy note"); await page.locator("#attendance-11-no").check();
   await page.locator("#guests-continue").click();
 }
-async function contact(page) {
+async function contact(page, values = {}) {
   for (const [key, value] of Object.entries({ contactEmail: "rsvp@example.test", addressLine1: "1 Synthetic Way", city: "Ottawa",
-    provinceState: "ON", postalCode: "A1A 1A1", country: "Canada", message: "A synthetic warm note" })) await page.locator(`#${key}`).fill(value);
+    provinceState: "ON", postalCode: "A1A 1A1", country: "Canada", message: "A synthetic warm note", ...values })) await page.locator(`#${key}`).fill(value);
   await page.locator("#contact-continue").click(); await expect(page.locator("#review-title")).toBeVisible();
 }
 
@@ -185,6 +185,19 @@ async function expectBalancedLayout(page) {
   expect(layout.footerGap).toBeGreaterThanOrEqual(48);
 }
 
+async function expectNonInteractiveFocusOnly(page, heading, interactiveControl) {
+  await expect(heading).toBeFocused();
+  expect(await heading.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
+  await page.keyboard.press('Tab');
+  await expect(interactiveControl).toBeFocused();
+  const focus = await interactiveControl.evaluate(el => {
+    const style = getComputedStyle(el);
+    return { style: style.outlineStyle, width: parseFloat(style.outlineWidth) };
+  });
+  expect(focus.style).not.toBe('none');
+  expect(focus.width).toBeGreaterThanOrEqual(2);
+}
+
 async function expectGuestCards(page) {
   for (const card of await page.locator('.invitee-response').all()) {
     await expect(card).toHaveAccessibleName(await card.locator('.invitee-name').textContent());
@@ -214,7 +227,7 @@ for (const width of [320, 375, 390, 768, 1280]) test(`RSVP presentation through 
   await find(page);
   await expect(page.locator('#confirm-title')).toHaveText('Is this your party?');
   await expect(page.locator('#rsvp-progress')).toHaveText('Step 1 of 4 · Your invitation');
-  expect(await page.locator('#confirm-title').evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
+  await expectNonInteractiveFocusOnly(page, page.locator('#confirm-title'), page.getByRole('button', { name: 'Yes, continue' }));
   await expectBalancedLayout(page);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: `node_modules/.cache/rsvp-confirm-${width}.png`, fullPage: true });
@@ -244,14 +257,23 @@ for (const width of [320, 375, 390, 768, 1280]) test(`RSVP presentation through 
   await expectBalancedLayout(page);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: `node_modules/.cache/rsvp-contact-${width}.png`, fullPage: true });
-  await contact(page);
+  await contact(page, { message: Array.from({ length: 8 }, (_, index) => `Review detail line ${index + 1}`).join('\n') });
   await expect(page.getByRole('heading', { name: 'Review your RSVP', exact: true })).toBeFocused();
   await expectBalancedLayout(page);
+  if (width === 375 || width === 1280) {
+    await page.screenshot({ path: `node_modules/.cache/rsvp-review-${width}.png`, fullPage: true });
+  }
   await page.locator('#rsvp-submit').click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('RSVP Received');
   await expect(page.locator('#success-title')).toBeFocused();
-  await expect(page.locator('.rsvp-intro')).toBeHidden();
+  await expect(page.locator('#rsvp-workflow-header')).toBeHidden();
   await expect(page.locator('#rsvp-progress')).toBeHidden();
+  await expect(page.getByText('Daniel & Colleen · September 11, 2027', { exact: true })).toBeHidden();
+  await expect(page.locator('#rsvp-page-title')).toBeHidden();
+  await expect(page.locator('#review-title')).toBeHidden();
+  expect(await page.locator('#rsvp-form input:not(#website), #rsvp-form select, #rsvp-form textarea, #rsvp-form button').evaluateAll(
+    controls => controls.every(control => control.getClientRects().length === 0)
+  )).toBe(true);
   await expect(page.locator('[data-step="success"] > p')).toHaveText([
     'Thank you for your RSVP.',
     'If you need any changes made, please contact Daniel or Colleen.',
@@ -259,10 +281,15 @@ for (const width of [320, 375, 390, 768, 1280]) test(`RSVP presentation through 
   expect(await page.locator('#success-title').evaluate(el => getComputedStyle(el).outlineStyle)).toBe('none');
   const successLayout = await page.locator('[data-step="success"]').evaluate(element => {
     const heading = element.querySelector('h1').getBoundingClientRect();
-    return { height: element.getBoundingClientRect().height, headingHeight: heading.height, headingWidth: heading.width };
+    return { height: element.getBoundingClientRect().height, headingHeight: heading.height, headingWidth: heading.width,
+      fontSize: parseFloat(getComputedStyle(element.querySelector('h1')).fontSize) };
   });
   expect(successLayout.height).toBeLessThan(320);
-  if (width === 1280) expect(successLayout.headingHeight).toBeLessThan(70);
+  if (width === 1280) {
+    expect(successLayout.headingHeight).toBeLessThan(70);
+    expect(successLayout.fontSize).toBeGreaterThanOrEqual(32);
+    expect(successLayout.fontSize).toBeLessThanOrEqual(48);
+  }
   await expectBalancedLayout(page);
   await page.screenshot({ path: `node_modules/.cache/rsvp-success-${width}.png`, fullPage: true });
 });
