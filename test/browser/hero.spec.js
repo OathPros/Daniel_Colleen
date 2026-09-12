@@ -14,14 +14,14 @@ async function useManifest(page, images, moments = []) {
 
 test("keeps the legacy hero for an empty managed collection", async ({ page }) => {
   await useManifest(page, []);
-  await page.goto("/index.html");
+  await page.goto("/");
   await expect(page.locator("[data-hero]")).toHaveAttribute("data-hero-mode", "legacy");
   await expect(page.locator("[data-hero] > .slide")).toHaveCount(5);
 });
 
 test("renders one managed image without a slideshow timer UI", async ({ page }) => {
   await useManifest(page, [{ src: "assets/images/home/hero/01.webp", position: "center 30%" }]);
-  await page.goto("/index.html");
+  await page.goto("/");
   const hero = page.locator("[data-hero]");
   await expect(hero).toHaveAttribute("data-hero-mode", "managed");
   await expect(hero.locator(".managed-slide")).toHaveCount(1);
@@ -35,7 +35,7 @@ test("derives the slide and progress counts from the managed collection", async 
     position: "center",
   }));
   await useManifest(page, images);
-  await page.goto("/index.html");
+  await page.goto("/");
   const hero = page.locator("[data-hero]");
   await expect(hero).toHaveAttribute("data-hero-mode", "managed");
   await expect(hero.locator(".managed-slide")).toHaveCount(12);
@@ -49,7 +49,7 @@ test("renders all 50 managed Moments We Love photos and opens them in the lightb
     alt: `Favourite moment ${index + 1}`,
   }));
   await useManifest(page, [], moments);
-  await page.goto("/index.html");
+  await page.goto("/");
 
   const gallery = page.locator("[data-gallery]");
   await expect(gallery).toHaveAttribute("data-gallery-mode", "managed");

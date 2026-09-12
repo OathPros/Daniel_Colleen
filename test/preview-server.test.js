@@ -19,7 +19,7 @@ test("upstream is restricted to preview Worker HTTPS origins", () => {
 });
 test("serves only explicit public files; private paths cannot be read", async t => {
   const origin = await serverFor(t);
-  for (const path of ["/rsvp.html", "/assets/js/rsvp.js", "/assets/css/rsvp.css"]) assert.equal((await fetch(origin + path)).status, 200);
+  for (const path of ["/rsvp", "/rsvp.html", "/assets/js/rsvp.js", "/assets/css/rsvp.css"]) assert.equal((await fetch(origin + path)).status, 200);
   // Only requests a nonexistent synthetic private path; never reads real CSV data.
   for (const path of ["/private/synthetic.private.csv", "/.env", "/.git/config", "/wrangler.jsonc", "/worker/src/index.js", "/scripts/import-guests.mjs", "/assets/"]) {
     assert.equal((await fetch(origin + path)).status, 404);

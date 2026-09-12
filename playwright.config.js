@@ -14,7 +14,7 @@ export default defineConfig({
   },
   webServer: {
     command: "node scripts/preview-server.mjs --static-only",
-    url: "http://localhost:4173/rsvp.html",
+    url: "http://localhost:4173/rsvp",
     reuseExistingServer: false,
     timeout: 15000,
   },
