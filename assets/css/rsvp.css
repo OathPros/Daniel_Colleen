@@ -1,10 +1,13 @@
 /* RSVP-only overrides preserve the shared site's wedding palette and typography. */
 #rsvp [hidden] { display: none !important; }
-main > #rsvp.rsvp-section { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
-#rsvp .section-panel { padding: clamp(1rem, 4vw, 3rem); border-radius: 30px; }
+main > #rsvp.rsvp-section {
+  height: auto;
+  padding-top: clamp(2.5rem, 5vw, 4.5rem);
+  padding-bottom: clamp(3.5rem, 7vw, 6rem);
+}
+#rsvp .section-panel { height: auto; padding: clamp(1rem, 4vw, 3rem); border-radius: 30px; }
 #rsvp .rsvp-intro { max-width: 700px; margin-inline: auto; text-align: center; }
 #rsvp .rsvp-page-title { margin: .75rem 0 0; font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.1rem); line-height: 1.12; font-weight: 400; }
-#rsvp.rsvp-success .rsvp-intro { display: none; }
 #rsvp.rsvp-success .section-panel { width: min(760px, 100%); padding: clamp(1.75rem, 4vw, 2.75rem); }
 #rsvp.rsvp-success .rsvp-form { max-width: 620px; margin-top: 0; }
 #rsvp [data-step="success"] { padding-block: clamp(.5rem, 2vw, 1.25rem); text-align: center; }
@@ -24,7 +27,7 @@ main > #rsvp.rsvp-section { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
 #rsvp .button { min-height: 48px; white-space: normal; font-size: 1rem; letter-spacing: 0; text-transform: none; max-width: 100%; }
 #rsvp button:disabled { opacity: .6; cursor: wait; transform: none; }
 #rsvp :focus-visible { outline: 3px solid var(--cranberry); outline-offset: 4px; }
-#rsvp [data-step] > [tabindex="-1"]:focus { outline: none; }
+#rsvp [data-step] > :is(h1, h2)[tabindex="-1"]:focus { outline: none; }
 #rsvp .rsvp-search { position: relative; }
 #guest-suggestions { list-style: none; margin: 0; padding: .35rem; border: 1px solid var(--soft-rule); border-radius: 14px; background: var(--warm-paper); box-shadow: var(--soft-shadow); max-height: 24rem; overflow-y: auto; }
 #guest-suggestions [role="option"] { padding: .8rem 1rem; min-height: 48px; border-radius: 8px; cursor: pointer; font-family: var(--sans); font-size: 1rem; }
