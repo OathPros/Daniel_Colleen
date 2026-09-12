@@ -3,10 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "images:build": "node scripts/build-image-manifest.mjs",
+    "images:check": "node scripts/build-image-manifest.mjs --check",
     "test": "node --test test/*.test.js",
     "test:browser": "playwright test",
     "preview": "node scripts/preview-server.mjs",
-    "check": "node --check worker/src/index.js && node --check worker/src/normalize.js && node --check assets/js/main.js && node --check assets/js/rsvp.js && node --check assets/js/rsvp-search.js && node --check scripts/preview-server.mjs && node --check scripts/import-guests.mjs",
+    "check": "npm run images:check && node --check worker/src/index.js && node --check worker/src/normalize.js && node --check assets/js/main.js && node --check assets/js/rsvp.js && node --check assets/js/rsvp-search.js && node --check scripts/preview-server.mjs && node --check scripts/import-guests.mjs && node --check scripts/build-image-manifest.mjs",
     "import": "node scripts/import-guests.mjs"
   },
   "devDependencies": {

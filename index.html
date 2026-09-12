@@ -27,7 +27,8 @@
     </nav>
   </header>
 <section id="top" class="hero-wrap">
-    <div class="hero-photo" aria-label="Photo slideshow of Daniel and Colleen">
+    <div class="hero-photo" data-hero data-hero-mode="legacy" aria-label="Photo slideshow of Daniel and Colleen">
+      <!-- Temporary migration fallback. Managed assets replace these slides automatically. -->
       <div class="slide" aria-label="Daniel and Colleen dancing in an orchard"></div>
       <div class="slide" aria-label="Daniel and Colleen by the water"></div>
       <div class="slide" aria-label="Daniel and Colleen on a beach swing"></div>
@@ -135,6 +136,7 @@
     <button class="gallery-lightbox__nav gallery-lightbox__nav--next" type="button" data-gallery-next aria-label="Next photo">›</button>
   </div>
 
+  <script src="assets/data/images.generated.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

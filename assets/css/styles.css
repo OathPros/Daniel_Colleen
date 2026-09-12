@@ -2874,3 +2874,23 @@ body:has(.intro-card) .gallery-feature-section {
 .mailing-address legend { padding: 0 .4rem; font-family: var(--font-display, Georgia, serif); font-size: 1.2rem; }
 .form-row label span { text-transform: none; font-weight: 400; }
 .guest-dinner select:disabled { opacity: .55; }
+
+/* Managed hero collections use state classes rather than the temporary legacy
+   fallback's fixed-count animation and selectors above. Higher specificity keeps
+   managed rendering fully independent from that migration-only implementation. */
+.hero-photo[data-hero-mode="managed"] .managed-slide {
+  animation: none;
+  background-position: var(--hero-position, center);
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  will-change: opacity;
+}
+.hero-photo[data-hero-mode="managed"] .managed-slide.is-active { opacity: 1; }
+.hero-photo[data-hero-mode="managed"] .photo-progress span {
+  opacity: 0.45;
+  transition: opacity 0.3s ease;
+}
+.hero-photo[data-hero-mode="managed"] .photo-progress span.is-active { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo[data-hero-mode="managed"] .managed-slide { transition: none; }
+}

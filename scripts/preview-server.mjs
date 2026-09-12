@@ -7,11 +7,11 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const publicFiles = new Set([
   "index.html", "rsvp.html", "venue.html", "travel.html", "story.html", "schedule.html", "registry.html", "faq.html",
   "Arwen.png", "Eowyn.png", "Merry.png", "Pippin.png",
-  "assets/css/styles.css", "assets/css/rsvp.css", "assets/css/portraits.css",
+  "assets/css/styles.css", "assets/css/rsvp.css", "assets/css/portraits.css", "assets/data/images.generated.js",
   "assets/js/main.js", "assets/js/rsvp.js", "assets/js/rsvp-search.js"
 ]);
 const apiPaths = new Set(["/api/rsvp/suggest", "/api/rsvp/lookup", "/api/rsvp/submit"]);
-const types = { html: "text/html; charset=utf-8", css: "text/css; charset=utf-8", js: "text/javascript; charset=utf-8", png: "image/png" };
+const types = { html: "text/html; charset=utf-8", css: "text/css; charset=utf-8", js: "text/javascript; charset=utf-8", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", avif: "image/avif" };
 
 export function previewOrigin(value) {
   let url;
@@ -63,7 +63,8 @@ export function createPreviewServer({ upstream, fetchImpl = fetch } = {}) {
       const file = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
       // Exact allowlist: no directory listing, private CSV, env files, worker
       // configuration, databases, source maps, or arbitrary repository paths.
-      if (!publicFiles.has(file)) return send(404, '{"message":"Not found."}');
+      const managedImage = /^assets\/images\/(?:[^/.][^/]*\/)*[^/.][^/]*\.(?:webp|jpe?g|png|avif)$/i.test(file);
+      if (!publicFiles.has(file) && !managedImage) return send(404, '{"message":"Not found."}');
       const path = resolve(root, file), actual = await realpath(path);
       if (actual !== path || !actual.startsWith(resolve(root) + sep)) return send(404, '{"message":"Not found."}');
       const body = request.method === "HEAD" ? "" : await readFile(path);
