@@ -1,4 +1,5 @@
 import { normalizeName, meaningfulQuery, suggestNames } from "./normalize.js";
+import { handleAdminRequest } from "./admin.js";
 
 const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
 const LIMITS = { name: 120, publicId: 100, email: 254, line1: 200, line2: 100, city: 100, region: 100, postal: 32, country: 100, dietary: 500, message: 2000, honeypot: 200 };
@@ -87,6 +88,7 @@ export function createHandler(overrides = {}) {
   return async (request, env) => {
     try {
       const path = new URL(request.url).pathname;
+      if (path.startsWith("/api/admin/")) return await handleAdminRequest(request, env, overrides);
       if (request.method !== "POST" || !["/api/rsvp/suggest", "/api/rsvp/lookup", "/api/rsvp/submit"].includes(path)) return reply({ message: "Not found." }, 404);
       const isSuggest = path.endsWith("/suggest"), isLookup = path.endsWith("/lookup"), isSearch = isSuggest || isLookup;
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";

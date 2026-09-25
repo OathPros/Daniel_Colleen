@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Invitation admin | Daniel &amp; Colleen</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar"><a class="brand" href="/">Daniel &amp; Colleen</a><div class="monogram dc-monogram" aria-hidden="true">D&amp;C</div></header>
+  <main id="main" class="admin-shell">
+    <section class="admin-panel" aria-labelledby="title">
+      <header class="admin-heading"><div><p class="eyebrow">Howlers administration</p><h1 id="title">Invitation roster</h1></div><button id="logout" class="button button-secondary" hidden>Log out</button></header>
+      <p id="status" class="admin-status" role="status" aria-live="polite"></p>
+      <form id="login" class="admin-form">
+        <h2>Admin sign in</h2>
+        <label>Username<input name="username" autocomplete="username" required /></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required /></label>
+        <button class="button button-primary">Sign in</button>
+      </form>
+      <div id="dashboard" hidden>
+        <p><a class="button button-secondary" href="/api/admin/export" download>Export roster for Excel</a></p>
+        <details class="create-party"><summary class="button button-primary">Add party</summary>
+          <form id="create-party" class="admin-form">
+            <label>Party name<input name="name" maxlength="120" required /></label>
+            <label>Guest names <span>(one per line)</span><textarea name="guests" rows="4" maxlength="2000" required></textarea></label>
+            <button class="button button-primary">Create party</button>
+          </form>
+        </details>
+        <div id="parties"></div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>

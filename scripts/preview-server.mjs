@@ -5,10 +5,10 @@ import { resolve, sep } from "node:path";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const publicFiles = new Set([
-  "index.html", "rsvp.html", "venue.html", "travel.html", "story.html", "schedule.html", "registry.html", "faq.html",
+  "index.html", "rsvp.html", "admin.html", "venue.html", "travel.html", "story.html", "schedule.html", "registry.html", "faq.html",
   "Arwen.png", "Eowyn.png", "Merry.png", "Pippin.png", "assets/favicon.png",
-  "assets/css/styles.css", "assets/css/rsvp.css", "assets/css/portraits.css", "assets/data/images.generated.js",
-  "assets/js/main.js", "assets/js/rsvp.js", "assets/js/rsvp-search.js"
+  "assets/css/styles.css", "assets/css/rsvp.css", "assets/css/admin.css", "assets/css/portraits.css", "assets/data/images.generated.js",
+  "assets/js/main.js", "assets/js/rsvp.js", "assets/js/rsvp-search.js", "assets/js/admin.js"
 ]);
 const apiPaths = new Set(["/api/rsvp/suggest", "/api/rsvp/lookup", "/api/rsvp/submit"]);
 const types = { html: "text/html; charset=utf-8", css: "text/css; charset=utf-8", js: "text/javascript; charset=utf-8", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", avif: "image/avif" };
