@@ -66,7 +66,9 @@ export class AdminRepository {
   }
   async exportRows() {
     const result = await this.db.prepare(`SELECT p.party_name,g.full_name,g.display_order,pr.contact_email,
-      gr.attending,gr.dinner_choice,gr.dietary_restrictions,pr.message,pr.submitted_at,pr.updated_at
+      pr.mailing_address_line1,pr.mailing_address_line2,pr.mailing_city,pr.mailing_province_state,
+      pr.mailing_postal_code,pr.mailing_country,gr.attending,gr.dinner_choice,gr.dietary_restrictions,
+      pr.message,pr.submitted_at,pr.updated_at
       FROM parties p JOIN guests g ON g.party_id=p.id LEFT JOIN party_rsvps pr ON pr.party_id=p.id
       LEFT JOIN guest_rsvps gr ON gr.guest_id=g.id ORDER BY p.party_number,g.display_order`).all();
     return result.results;
@@ -147,7 +149,7 @@ export async function handleAdminRequest(request, env, overrides = {}) {
     const repo = overrides.adminRepository || new AdminRepository(env.DB), now = new Date().toISOString();
     if (path === "/api/admin/parties" && request.method === "GET") return reply({ parties: await repo.list() });
     if (path === "/api/admin/export" && request.method === "GET") {
-      const columns = ["party_name", "full_name", "display_order", "contact_email", "attending", "dinner_choice", "dietary_restrictions", "message", "submitted_at", "updated_at"];
+      const columns = ["party_name", "full_name", "display_order", "contact_email", "mailing_address_line1", "mailing_address_line2", "mailing_city", "mailing_province_state", "mailing_postal_code", "mailing_country", "attending", "dinner_choice", "dietary_restrictions", "message", "submitted_at", "updated_at"];
       const csv = [columns, ...(await repo.exportRows()).map(row => columns.map(column => row[column] ?? ""))]
         .map(row => row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(",")).join("\r\n");
       return new Response(`\ufeff${csv}`, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": "attachment; filename=invitation-roster.csv", "cache-control": "no-store" } });
