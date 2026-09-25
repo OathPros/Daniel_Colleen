@@ -39,7 +39,11 @@ test("party and guest roster lifecycle preserves and removes responses correctly
   const reordered = await call(`parties/${party.id}/guest-order`, "PATCH", { guestIds: ids.toReversed() });
   assert.equal(reordered.status, 200, await reordered.text());
   assert.deepEqual((await (await call("parties")).json()).parties[0].guests.map(guest => guest.id), ids.toReversed());
-  const exported = await call("export"); assert.equal(exported.status, 200); assert.match(await exported.text(), /Renamed Party.*Gamma Example/);
+  const exported = await call("export"); assert.equal(exported.status, 200);
+  const exportedText = await exported.text();
+  assert.match(exportedText, /Renamed Party.*Gamma Example/);
+  assert.match(exportedText, /mailing_address_line1.*mailing_address_line2.*mailing_city.*mailing_province_state.*mailing_postal_code.*mailing_country/);
+  assert.match(exportedText, /"1 Way","","City","ON","A1A","Canada"/);
   assert.equal((await call(`guests/${originalId}`, "DELETE")).status, 200);
   assert.equal((await db.prepare("SELECT COUNT(*) count FROM guest_rsvps").first()).count, 0);
   assert.equal((await db.prepare("SELECT COUNT(*) count FROM party_rsvps").first()).count, 1);
