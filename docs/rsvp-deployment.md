@@ -191,4 +191,14 @@ npx wrangler d1 execute DB --env production --remote --command \
   "SELECT (SELECT COUNT(*) FROM parties) parties, (SELECT COUNT(*) FROM guests) guests, (SELECT COUNT(*) FROM party_rsvps) responses;"
 ```
 
-Grant account access only to people who need RSVP data, enable MFA, and avoid selecting names/contact/address/dietary/message columns unless required. There is intentionally no public admin or export endpoint.
+Grant account access only to people who need RSVP data, enable MFA, and avoid selecting names/contact/address/dietary/message columns unless required. There is no public roster or export endpoint; these operations are restricted to authenticated admins.
+
+## Admin roster access
+
+Set `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and a long, random `ADMIN_SESSION_SECRET`
+as encrypted Worker secrets in both environments before deployment. The built-in
+username and password are only the requested initial credentials and should be
+overridden when credentials rotate. Admin sessions use signed, HTTP-only, secure,
+same-site cookies with an eight-hour lifetime. The admin Excel-compatible CSV is
+generated directly from the current D1 data on each download, with no separate
+copy or synchronization process.

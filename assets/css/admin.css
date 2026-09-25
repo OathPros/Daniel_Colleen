@@ -1,0 +1,22 @@
+.admin-shell { min-height: 80vh; padding: clamp(2rem, 5vw, 5rem) 1rem; background: var(--linen); }
+.admin-panel { width: min(900px, 100%); margin: auto; padding: clamp(1.25rem, 4vw, 3rem); border-radius: 24px; background: var(--warm-paper); box-shadow: var(--soft-shadow); }
+.admin-heading, .party-heading, .guest-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.admin-heading h1 { margin: .25rem 0 1rem; font: 400 clamp(2.2rem, 5vw, 3.4rem)/1 var(--serif); }
+.eyebrow { margin: 0; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.admin-form { display: grid; gap: 1rem; max-width: 520px; }
+.admin-form label { display: grid; gap: .35rem; font-weight: 600; }
+.admin-form input, .admin-form textarea { padding: .75rem; border: 1px solid var(--soft-rule); border-radius: 10px; font: inherit; }
+.admin-status { min-height: 1.5em; color: var(--cranberry-deep); }
+.create-party { margin: 1rem 0 2rem; }
+.create-party summary { display: inline-block; cursor: pointer; }
+.create-party[open] summary { margin-bottom: 1rem; }
+.party-card { margin: 1.25rem 0; padding: 1.25rem; border: 1px solid var(--soft-rule); border-radius: 16px; }
+.party-heading h2 { margin: 0; font: 400 1.7rem var(--serif); }
+.party-actions, .guest-actions { display: flex; gap: .45rem; flex-wrap: wrap; }
+.party-card h3 { margin-bottom: .5rem; }
+.guest-list { list-style: none; padding: 0; }
+.guest-row { padding: .7rem 0; border-bottom: 1px solid var(--soft-rule); }
+.guest-response { display: block; color: var(--muted); font-size: .85rem; }
+.admin-panel .button { min-height: 42px; padding: .55rem .85rem; text-transform: none; letter-spacing: 0; }
+.button-danger { color: #7b2020; border-color: #7b2020; background: transparent; }
+@media (max-width: 600px) { .guest-actions { width: 100%; } .guest-actions .button { flex: 1; } }
