@@ -5,7 +5,7 @@ import { resolve, sep } from "node:path";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const publicFiles = new Set([
-  "index.html", "rsvp.html", "admin.html", "venue.html", "travel.html", "story.html", "schedule.html", "registry.html", "faq.html",
+  "index.html", "rsvp.html", "admin.html", "travel.html", "story.html", "schedule.html", "registry.html", "faq.html",
   "Arwen.png", "Eowyn.png", "Merry.png", "Pippin.png", "assets/favicon.png",
   "assets/css/styles.css", "assets/css/rsvp.css", "assets/css/admin.css", "assets/css/portraits.css", "assets/data/images.generated.js",
   "assets/js/main.js", "assets/js/rsvp.js", "assets/js/rsvp-search.js", "assets/js/admin.js"
