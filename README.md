@@ -17,7 +17,6 @@ that file, so replacing it and publishing the site is all that is required. A 51
 ```text
 .
 ├── index.html
-├── venue.html
 ├── schedule.html
 ├── travel.html
 ├── faq.html
