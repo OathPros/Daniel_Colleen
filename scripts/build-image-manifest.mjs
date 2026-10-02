@@ -3,6 +3,7 @@ import { relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 
 export const SUPPORTED_IMAGE_EXTENSIONS = new Set([".webp", ".jpg", ".jpeg", ".png", ".avif"]);
+const RESPONSIVE_DERIVATIVE_PATTERN = /-\d+w\.(?:webp|avif)$/i;
 const naturalCollator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
 
 function extension(filename) {
@@ -61,7 +62,9 @@ export async function createImageManifest({ imagesRoot = resolve("assets/images"
     }
     entries = entries.filter((entry) => !entry.name.startsWith(".")).sort((a, b) => naturalCollator.compare(a.name, b.name));
     const collection = webPath(relative(imagesRoot, directory));
-    const images = entries.filter((entry) => entry.isFile() && SUPPORTED_IMAGE_EXTENSIONS.has(extension(entry.name)))
+    const images = entries.filter((entry) => entry.isFile()
+      && SUPPORTED_IMAGE_EXTENSIONS.has(extension(entry.name))
+      && !RESPONSIVE_DERIVATIVE_PATTERN.test(entry.name))
       .sort((a, b) => naturalCollator.compare(a.name, b.name));
     const hasConfig = entries.some((entry) => entry.isFile() && entry.name.endsWith(".config.json"));
 
