@@ -2,6 +2,20 @@
 window.WEDDING_IMAGE_MANIFEST = {
   "schemaVersion": 1,
   "collections": {
+    "Fellowship": [
+      {
+        "src": "assets/images/Fellowship/gabriela.jpeg",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/Fellowship/maddy.jpeg",
+        "position": "center"
+      },
+      {
+        "src": "assets/images/Fellowship/marc.jpeg",
+        "position": "center"
+      }
+    ],
     "home/hero": [
       {
         "src": "assets/images/home/hero/IMG_3641.jpeg",
