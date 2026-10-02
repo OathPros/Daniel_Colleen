@@ -4,257 +4,205 @@ window.WEDDING_IMAGE_MANIFEST = {
   "collections": {
     "home/hero": [
       {
-        "src": "assets/images/home/hero/13.webp",
+        "src": "assets/images/home/hero/IMG_3641.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/hero/19.webp",
+        "src": "assets/images/home/hero/IMG_3642.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/hero/20.webp",
+        "src": "assets/images/home/hero/IMG_3643.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/hero/26.webp",
+        "src": "assets/images/home/hero/IMG_3645.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/hero/28.webp",
+        "src": "assets/images/home/hero/IMG_3646.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/hero/31.webp",
+        "src": "assets/images/home/hero/IMG_3651.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/hero/47.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/hero/49.webp",
+        "src": "assets/images/home/hero/palm-tree-studio-charity-mini-session-54.jpg",
         "position": "center"
       }
     ],
     "home/moments": [
       {
-        "src": "assets/images/home/moments/01.webp",
+        "src": "assets/images/home/moments/E81457EA-DBBA-427C-8970-C4C49FC8DACE.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/02.webp",
+        "src": "assets/images/home/moments/IMG_0379.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/03.webp",
+        "src": "assets/images/home/moments/IMG_1824.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/04.webp",
+        "src": "assets/images/home/moments/IMG_1968.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/05.webp",
+        "src": "assets/images/home/moments/IMG_2467.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/06.webp",
+        "src": "assets/images/home/moments/IMG_2476.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/07.webp",
+        "src": "assets/images/home/moments/IMG_2508.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/08.webp",
+        "src": "assets/images/home/moments/IMG_2550.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/09.webp",
+        "src": "assets/images/home/moments/IMG_2755.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/10.webp",
+        "src": "assets/images/home/moments/IMG_2766.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/11.webp",
+        "src": "assets/images/home/moments/IMG_2863.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/12.webp",
+        "src": "assets/images/home/moments/IMG_3130.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/13.webp",
+        "src": "assets/images/home/moments/IMG_3447.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/14.webp",
+        "src": "assets/images/home/moments/IMG_3449.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/15.webp",
+        "src": "assets/images/home/moments/IMG_3463.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/16.webp",
+        "src": "assets/images/home/moments/IMG_3466.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/17.webp",
+        "src": "assets/images/home/moments/IMG_3467.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/18.webp",
+        "src": "assets/images/home/moments/IMG_3469.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/19.webp",
+        "src": "assets/images/home/moments/IMG_3471.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/20.webp",
+        "src": "assets/images/home/moments/IMG_3472.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/21.webp",
+        "src": "assets/images/home/moments/IMG_3474.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/22.webp",
+        "src": "assets/images/home/moments/IMG_3476.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/23.webp",
+        "src": "assets/images/home/moments/IMG_3477.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/24.webp",
+        "src": "assets/images/home/moments/IMG_3478.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/25.webp",
+        "src": "assets/images/home/moments/IMG_3486.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/26.webp",
+        "src": "assets/images/home/moments/IMG_3639.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/27.webp",
+        "src": "assets/images/home/moments/IMG_3640.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/28.webp",
+        "src": "assets/images/home/moments/IMG_3644.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/29.webp",
+        "src": "assets/images/home/moments/IMG_3647.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/30.webp",
+        "src": "assets/images/home/moments/IMG_3648.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/31.webp",
+        "src": "assets/images/home/moments/IMG_3650.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/32.webp",
+        "src": "assets/images/home/moments/IMG_4948.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/33.webp",
+        "src": "assets/images/home/moments/IMG_4998.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/34.webp",
+        "src": "assets/images/home/moments/IMG_6992.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/35.webp",
+        "src": "assets/images/home/moments/IMG_7344.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/36.webp",
+        "src": "assets/images/home/moments/IMG_7378.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/37.webp",
+        "src": "assets/images/home/moments/IMG_7430.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/38.webp",
+        "src": "assets/images/home/moments/IMG_7509.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/39.webp",
+        "src": "assets/images/home/moments/IMG_8308.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/40.webp",
+        "src": "assets/images/home/moments/IMG_8550.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/41.webp",
+        "src": "assets/images/home/moments/IMG_8891.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/42.webp",
+        "src": "assets/images/home/moments/IMG_9118.jpeg",
         "position": "center"
       },
       {
-        "src": "assets/images/home/moments/43.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/44.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/45.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/46.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/47.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/48.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/49.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/50.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/51.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/52.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/53.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/54.webp",
-        "position": "center"
-      },
-      {
-        "src": "assets/images/home/moments/55.webp",
+        "src": "assets/images/home/moments/IMG_9177.jpeg",
         "position": "center"
       }
     ]
