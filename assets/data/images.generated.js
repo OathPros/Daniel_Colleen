@@ -25,11 +25,11 @@ window.WEDDING_IMAGE_MANIFEST = {
       },
       {
         "src": "assets/images/home/hero/IMG_3651.jpeg",
-        "position": "center"
+        "position": "center 35%"
       },
       {
         "src": "assets/images/home/hero/palm-tree-studio-charity-mini-session-54.jpg",
-        "position": "center"
+        "position": "center 30%"
       }
     ],
     "home/moments": [
