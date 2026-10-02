@@ -34,6 +34,16 @@ test("discovers supported formats, ignores unrelated files, and generates web pa
   });
 });
 
+test("ignores responsive derivatives so collections contain each source image once", async () => {
+  await withFixture({
+    "Fellowship/maddy2.jpg": "",
+    "Fellowship/maddy2-840w.webp": "",
+    "Fellowship/maddy2-1260w.webp": "",
+  }, async (root) => {
+    assert.deepEqual(names(await createImageManifest({ imagesRoot: root }), "Fellowship"), ["maddy2.jpg"]);
+  });
+});
+
 test("naturally orders one, multiple, 10+, and all 99 supported hero images", async () => {
   const files = {};
   for (let index = 99; index >= 1; index--) files[`home/hero/${index}.webp`] = "";

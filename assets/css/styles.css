@@ -2538,7 +2538,7 @@ main > .section:first-child:not(.story-feature-section) {
   height: 100%;
   min-height: 285px;
   object-fit: cover;
-  filter: saturate(0.96) contrast(1.04);
+  filter: none;
 }
 
 .party-card-eowyn .party-card-photo img,
