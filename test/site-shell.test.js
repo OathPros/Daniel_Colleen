@@ -23,7 +23,7 @@ test("every page links Our Story & Our People to the story route", async () => {
 test("wedding-party portraits use deployable source images", async () => {
   const html = await readFile(new URL("../story.html", import.meta.url), "utf8");
 
-  for (const portrait of ["maddy2.jpg", "marc.jpeg", "gabriela.jpeg"]) {
+  for (const portrait of ["maddy4.png", "marc.jpeg", "gabriela.jpeg"]) {
     assert.match(html, new RegExp(`<img src="assets/images/Fellowship/${portrait.replace(".", "\\.")}"`));
   }
   assert.doesNotMatch(html, /srcset="assets\/images\/Fellowship\//);
