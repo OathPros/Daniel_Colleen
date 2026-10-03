@@ -149,7 +149,9 @@ function renderSuggestions(result) {
     const option = node("li", name);
     option.id = `suggestion-${index}`; option.role = "option";
     option.setAttribute("aria-selected", "false");
-    option.addEventListener("pointerdown", event => event.preventDefault());
+    // Prevent the input blur that would hide the list before click. Safari 26
+    // can ignore this focus guard on pointerdown, while mousedown is reliable.
+    option.addEventListener("mousedown", event => event.preventDefault());
     option.addEventListener("click", () => lookup(name)); list.append(option);
   });
   list.hidden = !names.length;
