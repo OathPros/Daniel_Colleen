@@ -12,6 +12,10 @@ window.WEDDING_IMAGE_MANIFEST = {
         "position": "center"
       },
       {
+        "src": "assets/images/Fellowship/maddy4.png",
+        "position": "center"
+      },
+      {
         "src": "assets/images/Fellowship/marc.jpeg",
         "position": "center"
       }
